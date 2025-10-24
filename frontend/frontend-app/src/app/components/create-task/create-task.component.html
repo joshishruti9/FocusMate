@@ -1,0 +1,22 @@
+<form (ngSubmit)="onSubmit()">
+  <label>Task Name:</label>
+  <input type="text" [(ngModel)]="task.name" name="taskName" required />
+
+  <label>Due Date:</label>
+  <input type="date" [(ngModel)]="task.dueDate" name="dueDate" required />
+
+  <label>Priority:</label>
+  <select [(ngModel)]="task.priority" name="priority" required>
+    <option value="">Select Priority</option>
+    <option value="Low">Low</option>
+    <option value="Medium">Medium</option>
+    <option value="High">High</option>
+  </select>
+
+  <label>Category:</label>
+  <input type="text" [(ngModel)]="task.category" name="category" />
+
+  <button type="submit">Create Task</button>
+</form>
+
+<div *ngIf="successMessage" style="color: green">{{ successMessage }}</div>
