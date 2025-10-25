@@ -1,19 +1,15 @@
 import { Component } from '@angular/core';
-import { CreateTaskComponent } from './components/create-task/create-task.component';
-import { FormsModule } from '@angular/forms'; // needed for ngModel
-import { BrowserModule } from '@angular/platform-browser';
+import { RouterOutlet } from '@angular/router'
 
 @Component({
   selector: 'app-root',
-  standalone: true, // ✅ This makes it standalone
+  standalone: true,
   imports: [
-    BrowserModule,
-    FormsModule,
-    CreateTaskComponent
+    RouterOutlet
   ],
   template: `
     <h1>FocusMate Todo App</h1>
-    <app-create-task></app-create-task>
+    <router-outlet></router-outlet>
   `,
   styleUrls: ['./app.component.css']
 })
