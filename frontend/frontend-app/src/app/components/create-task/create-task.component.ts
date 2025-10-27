@@ -17,13 +17,22 @@ export class CreateTaskComponent {
 
   constructor(private taskService: TaskService) {}
 
-   onSubmit() {
-    this.taskService.createTask(this.task).subscribe({
-      next: () => {
-        this.successMessage = 'Task created successfully!';
-        this.task = { name: '', dueDate: '', priority: '', category: '' };
-      },
-      error: err => console.error(err)
-    });
+  onSubmit() {
+  try {
+      this.taskService.createTask(this.task).subscribe({
+        next: () => {
+          console.log('API call successful. Should NOT redirect.'); 
+          this.successMessage = 'Task created successfully!';
+          this.task = { name: '', dueDate: '', priority: '', category: '' };
+        },
+        error: err => {
+          console.error('API Error (Async):', err);
+          this.errorMessage = 'Failed to create task.';
+        }
+        });
+      } catch (syncError) {
+      console.error('CRITICAL SYNCHRONOUS ERROR (Failed to start API call):', syncError);
+      this.errorMessage = 'A critical app error occurred during submission.';
+    }
   }
 }
