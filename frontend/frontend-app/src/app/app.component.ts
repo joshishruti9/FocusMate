@@ -8,7 +8,6 @@ import { RouterOutlet } from '@angular/router'
     RouterOutlet
   ],
   template: `
-    <h1>FocusMate Todo App</h1>
     <router-outlet></router-outlet>
   `,
   styleUrls: ['./app.component.css']
