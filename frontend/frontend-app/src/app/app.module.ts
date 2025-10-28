@@ -6,7 +6,6 @@ import { CreateTaskComponent } from './components/create-task/create-task.compon
   standalone: true,           
   imports: [CreateTaskComponent],
   template: `
-    <h1>FocusMate Todo App</h1>
     <app-create-task></app-create-task>
   `,
   styleUrls: ['./app.component.css']
