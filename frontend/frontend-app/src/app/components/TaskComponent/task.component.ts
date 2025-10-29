@@ -8,10 +8,10 @@ import { CommonModule } from '@angular/common';
   standalone: true, 
   imports: [FormsModule, CommonModule], 
   providers: [TaskService],
-  templateUrl: './create-task.component.html',
-  styleUrls: ['./create-task.component.css']
+  templateUrl: './task.component.html',
+  styleUrls: ['./task.component.css']
 })
-export class CreateTaskComponent {
+export class TaskComponent {
   task = { name: '', dueDate: '', priority: '', category: '' };
   successMessage: string = '';
   errorMessage: string = '';
