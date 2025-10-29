@@ -24,4 +24,12 @@ export class TaskService {
   getTasks(): Observable<Task[]> {
     return this.http.get<Task[]>(this.apiUrl);
   }
+
+  getPendingTasks(): Observable<Task[]> {
+    return this.http.get<Task[]>(this.apiUrl + '/pending');
+  }
+
+  getTaskbyId(): Observable<Task[]> {
+    return this.http.get<Task[]>(this.apiUrl + '/:id');
+  }
 }

@@ -1,8 +1,8 @@
-<div class="quest-form-container">
+ <div class="quest-form-container">
   <div class="quest-form-card">
     <h2 class="quest-form-title text-center mb-4">New Quest Log Entry</h2>
 
-    <form (ngSubmit)="onSubmit()" #taskForm="ngForm">
+    <form (ngSubmit)="createTask()" #taskForm="ngForm">
       <div class="mb-3">
         <label for="taskName" class="form-label">Task Name (Mission Brief)</label>
         <input

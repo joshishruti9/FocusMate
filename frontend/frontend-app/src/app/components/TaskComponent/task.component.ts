@@ -22,7 +22,7 @@ export class TaskComponent {
     this.minDate = today.toISOString().split('T')[0];
   }
 
-  onSubmit() {
+  createTask() {
   try {
       this.taskService.createTask(this.task).subscribe({
         next: () => {
@@ -40,4 +40,27 @@ export class TaskComponent {
       this.errorMessage = 'Error: A critical app error occurred during submission.';
     }
   }
+
+  viewTasks() {
+    this.taskService.getTasks().subscribe(tasks => {
+      console.log('Retrieved tasks:', tasks);
+    });
+  }
+    
+    viewPendingTasks() {
+    this.taskService.getPendingTasks().subscribe(tasks => {
+      console.log('Retrieved tasks:', tasks);
+    });
+  }
+    
+    viewTaskbyId() {
+    this.taskService.getTaskbyId().subscribe(tasks => {
+      console.log('Retrieved tasks:', tasks);
+    });
+
+  }
 }
+
+function viewTaskbyId() {
+      throw new Error('Function not implemented.');
+    }
