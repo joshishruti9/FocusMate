@@ -1,9 +1,8 @@
 import { Routes } from '@angular/router';
-import { CreateTaskComponent } from './components/create-task/create-task.component';
+import { HomeComponent } from './components/HomeComponent/home.component';
+import { TaskComponent } from './components/TaskComponent/task.component';
 
 export const routes: Routes = [ 
-    { 
-    path: '', 
-    component: CreateTaskComponent 
-  }
+    { path: 'task', component: TaskComponent },
+    {path: '', component: HomeComponent}
 ];

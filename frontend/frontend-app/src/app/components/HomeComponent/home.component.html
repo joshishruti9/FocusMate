@@ -1,0 +1,35 @@
+<!-- Home Component Template -->
+<app-navbar></app-navbar>
+
+<div class="homepage-container text-center">
+  <div class="hero-section">
+    <h1 class="app-title">FocusMate</h1>
+    <p class="subtitle">
+      Stay productive, earn rewards, and achieve your goals — one task at a time.
+    </p>
+  </div>
+
+  <div class="rewards-section">
+    <h2 class="rewards-title">Your Reward Progress</h2>
+    <div class="progress-container">
+      <div class="progress">
+        <div
+          class="progress-bar progress-bar-striped progress-bar-animated neon-progress"
+          role="progressbar"
+          [style.width.%]="rewardProgress"
+          aria-valuenow="{{ rewardProgress }}"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          {{ rewardProgress }}%
+        </div>
+      </div>
+      <p class="reward-info">
+        You've earned <strong>{{ earnedRewards }}</strong> out of
+        <strong>{{ totalRewards }}</strong> points!
+      </p>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

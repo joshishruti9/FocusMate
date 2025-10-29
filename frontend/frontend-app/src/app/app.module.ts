@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
-import { CreateTaskComponent } from './components/create-task/create-task.component';
+import { TaskComponent } from './components/TaskComponent/task.component';
+import { HomeComponent } from './components/HomeComponent/home.component';
+import { NavbarComponent } from './components/NavbarComponent/navbar.component';
+
 
 @Component({
   selector: 'app-root',
   standalone: true,           
-  imports: [CreateTaskComponent],
+  imports: [TaskComponent, NavbarComponent, HomeComponent],
   template: `
-    <app-create-task></app-create-task>
+    <app-home></app-home>
   `,
   styleUrls: ['./app.component.css']
 })
