@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Task {
+  id?: string; // optional ID field
   name: string;
   dueDate: string;
   priority: string;
@@ -26,10 +27,10 @@ export class TaskService {
   }
 
   getPendingTasks(): Observable<Task[]> {
-    return this.http.get<Task[]>(this.apiUrl + '/pending');
+    return this.http.get<Task[]>(`${this.apiUrl}/pending`);
   }
 
-  getTaskbyId(): Observable<Task[]> {
-    return this.http.get<Task[]>(this.apiUrl + '/:id');
+  getTaskById(id: string): Observable<Task> {
+    return this.http.get<Task>(`${this.apiUrl}/${id}`);
   }
 }
