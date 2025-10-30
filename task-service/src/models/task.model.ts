@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const taskSchema = new mongoose.Schema({
+  taskId: { type: Number, required: true, unique: true },
   userEmail: String,
   taskName: String,
   dueDate: String,
