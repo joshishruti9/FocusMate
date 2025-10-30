@@ -3,14 +3,17 @@ import Task from "../models/task.model";
 
 export const createTask = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { taskName, dueDate, priority, category, userEmail } = req.body;
+    const { taskName, dueDate, priority, category, userEmail, description, isCompleted, rewardPoints } = req.body;
 
     const task = new Task({
       taskName,
       dueDate,
       priority,
       category,
-      userEmail
+      userEmail,
+      description,
+      isCompleted,
+      rewardPoints
     });
 
     await task.save();
