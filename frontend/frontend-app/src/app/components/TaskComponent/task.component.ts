@@ -17,6 +17,7 @@ export class TaskComponent {
   successMessage: string = '';
   errorMessage: string = '';
   minDate: string;
+  taskId: string = '';
 
   constructor(private taskService: TaskService) {
     const today = new Date();
@@ -54,8 +55,8 @@ export class TaskComponent {
     });
   }
     
-    viewTaskbyId() {
-    this.taskService.getTaskbyId().subscribe(tasks => {
+    viewTaskbyId(taskId: string) {
+    this.taskService.getTaskById(taskId).subscribe(tasks => {
       console.log('Retrieved tasks:', tasks);
     });
 
