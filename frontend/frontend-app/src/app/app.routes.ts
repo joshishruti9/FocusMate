@@ -4,7 +4,9 @@ import { ShopComponent } from './components/shop/shop.component';
 
 export const routes: Route[] = [
   { path: '', component: CreateTaskComponent }, // default route
-  { path: 'shop', component: ShopComponent },  // shop route
+  { path: 'shop', component: ShopComponent },   // shop route
 ];
+
+
 
 

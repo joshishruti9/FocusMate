@@ -15,6 +15,7 @@
           "options": {
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
+            "scripts": ["node_modules/zone.js/fesm2015/zone.js"],
             "assets": [
               {
                 "glob": "**/*",
@@ -81,7 +82,7 @@
               }
             ],
             "styles": [
-               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css"
             ]
           }
@@ -93,3 +94,4 @@
     "analytics": false
   }
 }
+

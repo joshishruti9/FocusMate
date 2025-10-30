@@ -1,23 +1,41 @@
 import { Component } from '@angular/core';
+import { NavbarComponent } from './components/NavbarComponent/navbar.component';
+import { FooterComponent } from './components/FooterComponent/footer.component';
+import { CreateTaskComponent } from './components/create-task/create-task.component';
+import { ShopComponent } from './components/shop/shop.component';
+import { HttpClientModule } from '@angular/common/http';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [
+    RouterOutlet,
+    NavbarComponent,
+    FooterComponent,
+    CreateTaskComponent,
+    ShopComponent,
+    HttpClientModule
+  ],
   template: `
-    <nav class="navbar navbar-expand navbar-light bg-light">
-      <a class="navbar-brand" href="#">FocusMate</a>
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" routerLink="">Tasks</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="shop">Shop</a></li>
-      </ul>
-    </nav>
+    <app-navbar></app-navbar>
     <div class="container mt-4">
-      <router-outlet></router-outlet>
+      <h1 class="text-center mb-4">FocusMate</h1>
+      <div class="row">
+        <div class="col-md-6">
+          <app-create-task></app-create-task>
+        </div>
+        <div class="col-md-6">
+          <app-shop></app-shop>
+        </div>
+      </div>
     </div>
-  `
+    <app-footer></app-footer>
+  `,
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {}
+
+
 
 

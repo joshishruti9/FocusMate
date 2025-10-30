@@ -1,0 +1,67 @@
+/* === Base Container === */
+.quest-form-container {
+  min-height: 100vh;
+  background-color: #121418;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* === Card Styling === */
+.quest-form-card {
+  background-color: #1a1d22;
+  border: 2px solid cyan;
+  border-radius: 10px;
+  box-shadow: 0 0 20px cyan;
+  padding: 2rem;
+  width: 100%;
+  max-width: 700px;
+}
+
+/* === Title === */
+.quest-form-title {
+  color: cyan;
+  text-shadow: 0 0 10px cyan, 0 0 20px cyan;
+  font-weight: 700;
+}
+
+/* === Labels === */
+.quest-form-card .form-label {
+  color: cyan;
+  font-weight: 500;
+}
+
+/* === Input Fields === */
+.quest-form-card .form-control,
+.quest-form-card .form-select {
+  background-color: #0f1114;
+  color: #d1d1d1;
+  border: 1px solid #2acfd4;
+  border-radius: 6px;
+}
+
+.quest-form-card .form-control:focus,
+.quest-form-card .form-select:focus {
+  box-shadow: 0 0 8px cyan;
+  border-color: cyan;
+  background-color: #111417;
+  color: white;
+}
+
+/* === Button === */
+.quest-btn {
+  background: linear-gradient(to right, #7f00ff, #00ffff);
+  border: none;
+  color: #000;
+  font-weight: bold;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.quest-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #00ffff;
+  color: #000;
+}
