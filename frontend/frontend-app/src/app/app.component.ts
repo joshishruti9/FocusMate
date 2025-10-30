@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { NavbarComponent } from './components/NavbarComponent/navbar.component';
 import { FooterComponent } from './components/FooterComponent/footer.component';
-import { CreateTaskComponent } from './components/create-task/create-task.component';
 import { ShopComponent } from './components/shop/shop.component';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterOutlet } from '@angular/router';
+import { TaskComponent } from './components/TaskComponent/task.component';
 
 @Component({
   selector: 'app-root',
@@ -13,24 +13,12 @@ import { RouterOutlet } from '@angular/router';
     RouterOutlet,
     NavbarComponent,
     FooterComponent,
-    CreateTaskComponent,
+    TaskComponent,
     ShopComponent,
     HttpClientModule
   ],
   template: `
-    <app-navbar></app-navbar>
-    <div class="container mt-4">
-      <h1 class="text-center mb-4">FocusMate</h1>
-      <div class="row">
-        <div class="col-md-6">
-          <app-create-task></app-create-task>
-        </div>
-        <div class="col-md-6">
-          <app-shop></app-shop>
-        </div>
-      </div>
-    </div>
-    <app-footer></app-footer>
+     <router-outlet></router-outlet>
   `,
   styleUrls: ['./app.component.css']
 })

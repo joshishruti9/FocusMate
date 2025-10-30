@@ -1,10 +1,12 @@
 import { Route } from '@angular/router';
-import { CreateTaskComponent } from './components/create-task/create-task.component';
 import { ShopComponent } from './components/shop/shop.component';
+import { HomeComponent } from './components/HomeComponent/home.component';
+import { TaskComponent } from './components/TaskComponent/task.component';
 
 export const routes: Route[] = [
-  { path: '', component: CreateTaskComponent }, // default route
+  { path: '', component: HomeComponent }, // default route
   { path: 'shop', component: ShopComponent },   // shop route
+  { path: 'task', component: TaskComponent }  // task route
 ];
 
 
