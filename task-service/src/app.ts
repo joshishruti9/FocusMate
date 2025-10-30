@@ -6,6 +6,8 @@ import taskRoutes from './routes/task.routes';
 
 dotenv.config();
 
+const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/focusmate";
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -14,7 +16,7 @@ app.use(express.json());
 app.use('/api/tasks', taskRoutes);
 
 // DB connection
-mongoose.connect(process.env.MONGO_URI!)
+mongoose.connect(mongoUri)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('DB connection error:', err));
 
