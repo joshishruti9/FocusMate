@@ -6,6 +6,8 @@ import userRoutes from './routes/user.routes';
 
 dotenv.config();
 
+const mongoUri = "mongodb://localhost:27017/focusmate";
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -14,9 +16,9 @@ app.use(express.json());
 app.use('/api/users', userRoutes);
 
 // DB connection
-mongoose.connect(process.env.MONGO_URI!)
+mongoose.connect(mongoUri)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('DB connection error:', err));
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
