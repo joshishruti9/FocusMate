@@ -7,7 +7,8 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/focusmate_shop";
+// MongoDB connection string
+const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/focusmate";
 
 mongoose
   .connect(mongoUri)
