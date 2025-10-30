@@ -1,0 +1,125 @@
+/* === Neon Blue Theme for FocusMate Homepage === */
+.homepage-container {
+  background-color: #0a0f1f;
+  color: #e0f7ff;
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+.hero-section {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.app-title {
+  font-size: 3.2rem;
+  font-weight: bold;
+  color: #00ffff;
+  text-shadow: 0 0 10px #00ffff, 0 0 10px #0099ff;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #cceeff;
+  margin-top: 10px;
+}
+
+/* === Rewards Section === */
+.rewards-section {
+  margin: 0 auto;
+  max-width: 600px;
+  background: rgba(0, 30, 60, 0.5);
+  border-radius: 20px;
+  padding: 25px 20px;
+  box-shadow: 0 0 20px #0099ff;
+}
+
+.rewards-title {
+  font-size: 1.6rem;
+  color: #00e5ff;
+  margin-bottom: 15px;
+}
+
+/* === Progress Bar === */
+.progress-container {
+  width: 100%;
+}
+
+.progress {
+  position: relative;
+  height: 28px;
+  background-color: #1a1f33;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* === Animated Neon Progress Bar (one-way looping) === */
+.neon-progress {
+  position: relative;
+  height: 100%;
+  width: 0%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+
+  background: linear-gradient(90deg, #00ffff, #0077ff);
+  box-shadow: 0 0 15px #00ffff, 0 0 30px #0077ff;
+  color: #000;
+  font-weight: 600;
+
+  --pct: 50%; /* Angular overrides this */
+  animation: progressFill 5s ease-in-out infinite;
+  will-change: width;
+}
+
+/* Animation: fill to target, then jump back to 0 instantly */
+@keyframes progressFill {
+  0%   { width: 0%; }
+  90%  { width: var(--pct, 50%); }
+  100% { width: 0%; }
+}
+
+/* Optional shimmer glow */
+.neon-progress::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 20%,
+    transparent 40%
+  );
+  transform: translateX(-100%);
+  animation: shimmer 2.4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* === Reward Info Text === */
+.reward-info {
+  margin-top: 10px;
+  color: #aaddff;
+  font-size: 1rem;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .app-title { font-size: 2.2rem; }
+  .subtitle { font-size: 1rem; }
+  .rewards-section { padding: 20px; margin: 20px 10px; }
+}
+
+@media (max-width: 480px) {
+  .app-title { font-size: 1.8rem; }
+  .rewards-title { font-size: 1.3rem; }
+  .progress { height: 25px; }
+}

@@ -1,0 +1,158 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #0a0f1f;
+}
+
+/* ===== Container: centers card below navbar ===== */
+.quest-form-container {
+  min-height: calc(100vh - 56px);
+  display: flex;
+  align-items: center;        /* vertical centering */
+  justify-content: center;    /* horizontal centering */
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+}
+
+/* === Glowing Card === */
+.quest-form-card {
+  position: relative;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 700px;
+  overflow: visible;
+}
+
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+/* === Animated Glow Border=== */
+.quest-form-card::before {
+  content: "";
+  position: absolute;
+  inset: -5px; /* how far glow extends outward */
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--angle),
+    #7f00ff 0deg,
+    #7f00ff 90deg,
+    #00ffff 180deg,
+    #00ffff 270deg,
+    #7f00ff 360deg
+  );
+  filter: blur(1rem);
+  opacity: .75;
+  z-index: 0;
+  pointer-events: none;
+  animation: 6s spin linear infinite;
+}
+
+@keyframes spin {
+  from {
+    --angle: 0deg;
+
+  }
+  to{
+    --angle: 360deg;
+  }
+}
+
+/* === Solid Card Face === */
+.quest-form-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #1a1d22;
+  z-index: 1;
+}
+
+/* === Inner Content === */
+.quest-card-content {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  color: #fff;
+}
+
+/* === Title === */
+.quest-form-title {
+  color: cyan;
+  /*text-shadow: 0 0 10px cyan, 0 0 20px cyan;*/
+  font-weight: 700;
+  text-align: center;
+}
+
+/* === Labels === */
+.quest-card-content .form-label {
+  color: cyan;
+  font-weight: 500;
+}
+
+/* === Input Fields === */
+.quest-card-content .form-control,
+.quest-card-content .form-select {
+  background-color: #0f1114;
+  color: #2acfd4;
+  border: 1px solid #2acfd4;
+  border-radius: 6px;
+}
+
+.quest-card-content .form-control:focus,
+.quest-card-content .form-select:focus {
+  box-shadow: 0 0 8px cyan;
+  border-color: cyan;
+  background-color: #111417;
+  color: white;
+}
+
+/* === Button === */
+.quest-btn {
+  background: linear-gradient(90deg, #7f00ff, #00ffff);
+  background-size: 200% 200%;
+  border: none;
+  color: #000;
+  font-weight: bold;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  transition: transform 0.2s ease, box-shadow 0.3s ease, background-position 0.5s ease;
+  cursor: pointer;
+}
+
+/* === Hover state === */
+.quest-btn:hover {
+  transform: scale(1.05);
+  color: #fff;
+  animation: pulse512 1.5s infinite, gradientShift 3s ease infinite; /* pulse + gradient */
+}
+
+/* === Pulse animation === */
+@keyframes pulse512 {
+  0% {
+    box-shadow: 0 0 0 0 #00ffff66;
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 255, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 255, 255, 0);
+  }
+}
+
+/* === Smooth gradient motion (new) === */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
+
