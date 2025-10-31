@@ -3,10 +3,10 @@ import User from "../models/user.model";
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { username, firstName, lastName, password, rewardPoints } = req.body;
+    const { userEmail, firstName, lastName, password, rewardPoints } = req.body;
 
     const user = new User({
-      username,
+      userEmail,
       firstName,
       lastName,
       password,
