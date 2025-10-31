@@ -6,10 +6,11 @@ const taskSchema = new mongoose.Schema({
   taskName: String,
   dueDate: String,
   category: String,
-  priority: String,
+  priority: {type: String, enum: ["Low", "Medium", "High"], default: "Low"},
   description: String,
   isCompleted: { type: Boolean, default: false },
   rewardPoints: Number,
 });
+
 
 export default mongoose.model("Task", taskSchema);

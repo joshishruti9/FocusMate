@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
   password: String,
-  totalEarned: Number
+  rewardPoints: Number
 });
 
 export default mongoose.model("User", userSchema);

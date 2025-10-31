@@ -3,14 +3,14 @@ import User from "../models/user.model";
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { username, firstName, lastName, password, totalEarned } = req.body;
+    const { username, firstName, lastName, password, rewardPoints } = req.body;
 
     const user = new User({
       username,
       firstName,
       lastName,
       password,
-      totalEarned
+      rewardPoints
     });
 
     await user.save();
