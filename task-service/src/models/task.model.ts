@@ -2,14 +2,14 @@ import mongoose from "mongoose";
 import { runInNewContext } from "vm";
 
 const taskSchema = new mongoose.Schema({
-  userEmail: String,
-  taskName: String,
-  dueDate: String,
-  category: String,
-  priority: {type: String, enum: ["Low", "Medium", "High"], default: "Low"},
-  description: String,
+  userEmail: {type: String, required: true, unique: true},
+  taskName: {type: String, required: true},
+  dueDate: {type: String, required: true},
+  category: {type: String},
+  priority: {type: String, enum: ["Low", "Medium", "High"], default: "Low", required: true},
+  description: {type: String, default: ""},
   isCompleted: { type: Boolean, default: false },
-  rewardPoints: Number,
+  rewardPoints: {type: Number},
 });
 
 
