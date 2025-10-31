@@ -4,13 +4,26 @@
     <h2 class="quest-form-title text-center mb-4">New Quest Log Entry</h2>
 
     <form (ngSubmit)="createTask()" #taskForm="ngForm">
+       <div class="mb-3">
+        <label for="userEmail" class="form-label">Agent Mail</label>
+        <input
+          type="text"
+          id="userEmail"
+          class="form-control"
+          [(ngModel)]="task.userEmail" 
+          name="userEmail" 
+          required 
+          placeholder="abc@gmail.com"
+        />
+      </div>
+
       <div class="mb-3">
         <label for="taskName" class="form-label">Task Name (Mission Brief)</label>
         <input
           type="text"
           id="taskName"
           class="form-control"
-          [(ngModel)]="task.name" 
+          [(ngModel)]="task.taskName" 
           name="taskName" 
           required 
           placeholder="e.g., Defeat the final boss"

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { runInNewContext } from "vm";
 
 const taskSchema = new mongoose.Schema({
-  userEmail: {type: String, required: true, unique: true},
+  userEmail: {type: String, required: true},
   taskName: {type: String, required: true},
   dueDate: {type: String, required: true},
   category: {type: String},
