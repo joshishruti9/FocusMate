@@ -3,11 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Task {
-  id?: string; // optional ID field
-  name: string;
+  taskName: string;
   dueDate: string;
   priority: string;
   category: string;
+  description: string;
+  userEmail: string;
 }
 
 @Injectable({

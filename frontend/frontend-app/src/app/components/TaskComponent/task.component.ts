@@ -13,11 +13,13 @@ import { NavbarComponent } from '../NavbarComponent/navbar.component';
   styleUrls: ['./task.component.css']
 })
 export class TaskComponent {
-  task = { name: '', dueDate: '', priority: '', category: '' };
+  task = { taskName: '', dueDate: '', priority: '', category: '', description: '', userEmail: ''};
   successMessage: string = '';
   errorMessage: string = '';
   minDate: string;
   taskId: string = '';
+  description: string = '';
+  userEmail: string = '';
 
   constructor(private taskService: TaskService) {
     const today = new Date();
@@ -30,7 +32,7 @@ export class TaskComponent {
         next: () => {
           console.log('API call successful.'); 
           this.successMessage = 'Success: New Quest Logged! Preparing for deployment.';
-          this.task = { name: '', dueDate: '', priority: '', category: '' };
+          this.task = { taskName: '', dueDate: '', priority: '', category: '', description: '', userEmail: ''};
         },
         error: err => {
           console.error('API Error (Async):', err);
