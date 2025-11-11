@@ -12,7 +12,6 @@ const router = express.Router();
 // Route mappings
 router.get("/", getAllItems);
 router.get("/:id", getItemById);
-router.post("/", createItem);
 router.post("/purchase", purchaseItem);
 
 export default router;

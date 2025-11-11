@@ -3,9 +3,13 @@
 
 <div class="row">
   <div class="col-md-4 mb-4" *ngFor="let item of items">
-    <div class="card h-100">
-      <img [src]="item.imageUrl" class="card-img-top" alt="{{ item.name }}" />
-      <div class="card-body">
+    <div class="card h-100 shop-card">
+      <!-- Image section -->
+      <div class="image-container">
+        <img [src]="item.imageUrl" alt="{{ item.name }}" class="card-img" />
+      </div>
+      <!-- Info section -->
+      <div class="card-body text-center">
         <h5 class="card-title">{{ item.name }}</h5>
         <p class="card-text">Price: {{ item.price }} coins</p>
         <button class="btn btn-primary" (click)="purchaseItem(item._id)">
@@ -15,5 +19,4 @@
     </div>
   </div>
 </div>
-
 

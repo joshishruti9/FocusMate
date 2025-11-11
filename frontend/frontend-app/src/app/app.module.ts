@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { NavbarComponent } from './components/NavbarComponent/navbar.component';
-import { CreateTaskComponent } from './components/create-task/create-task.component';
-import { ShopComponent } from './components/shop/shop.component';
+import { TaskComponent } from './components/TaskComponent/task.component';
+import { ShopComponent } from './components/ShopComponent/shop.component';
 import { HttpClientModule } from '@angular/common/http';  
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [NavbarComponent, CreateTaskComponent, ShopComponent, HttpClientModule],
+  imports: [NavbarComponent, TaskComponent, ShopComponent, HttpClientModule],
   template: `
     <app-navbar></app-navbar>
     <div class="container mt-4">

@@ -52,13 +52,15 @@ export class TaskComponent {
       console.log('Retrieved tasks:', tasks);
     });
   }
-    
+    /*
     viewTaskbyId() {
-    this.taskService.getTaskbyId().subscribe(tasks => {
+    this.taskService.getTaskById().subscribe((tasks: any) =>  {
       console.log('Retrieved tasks:', tasks);
     });
+    
 
   }
+    */
 }
 
 function viewTaskbyId() {
