@@ -61,10 +61,9 @@ export class TaskComponent {
     this.taskService.getTaskById(taskId).subscribe(tasks => {
       console.log('Retrieved tasks:', tasks);
     });
+    
 
   }
+    
 }
 
-function viewTaskbyId() {
-      throw new Error('Function not implemented.');
-    }
