@@ -2,20 +2,24 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TaskService } from '../../services/task.service';
 import { CommonModule } from '@angular/common';
+import { NavbarComponent } from '../NavbarComponent/navbar.component';
 
 @Component({
   selector: 'app-create-task',
   standalone: true, 
-  imports: [FormsModule, CommonModule], 
+  imports: [FormsModule, CommonModule, NavbarComponent], 
   providers: [TaskService],
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.css']
 })
 export class TaskComponent {
-  task = { name: '', dueDate: '', priority: '', category: '' };
+  task = { taskName: '', dueDate: '', priority: '', category: '', description: '', userEmail: ''};
   successMessage: string = '';
   errorMessage: string = '';
   minDate: string;
+  taskId: string = '';
+  description: string = '';
+  userEmail: string = '';
 
   constructor(private taskService: TaskService) {
     const today = new Date();
@@ -28,7 +32,7 @@ export class TaskComponent {
         next: () => {
           console.log('API call successful.'); 
           this.successMessage = 'Success: New Quest Logged! Preparing for deployment.';
-          this.task = { name: '', dueDate: '', priority: '', category: '' };
+          this.task = { taskName: '', dueDate: '', priority: '', category: '', description: '', userEmail: ''};
         },
         error: err => {
           console.error('API Error (Async):', err);
@@ -52,17 +56,14 @@ export class TaskComponent {
       console.log('Retrieved tasks:', tasks);
     });
   }
-    /*
-    viewTaskbyId() {
-    this.taskService.getTaskById().subscribe((tasks: any) =>  {
+    
+    viewTaskbyId(taskId: string) {
+    this.taskService.getTaskById(taskId).subscribe(tasks => {
       console.log('Retrieved tasks:', tasks);
     });
     
 
   }
-    */
+   
 }
 
-function viewTaskbyId() {
-      throw new Error('Function not implemented.');
-    }

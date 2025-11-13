@@ -1,35 +1,236 @@
-<!-- Home Component Template -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focusmate - Gamified To-Do List</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+</head>
 
-
-<div class="homepage-container text-center">
-  <div class="hero-section">
-    <h1 class="app-title">FocusMate</h1>
-    <p class="subtitle">
-      Stay productive, earn rewards, and achieve your goals — one task at a time.
-    </p>
-  </div>
-
-  <div class="rewards-section">
-    <h2 class="rewards-title">Your Reward Progress</h2>
-    <div class="progress-container">
-      <div class="progress">
-        <div
-          class="progress-bar progress-bar-striped progress-bar-animated neon-progress"
-          role="progressbar"
-          [style.width.%]="rewardProgress"
-          aria-valuenow="{{ rewardProgress }}"
-          aria-valuemin="0"
-          aria-valuemax="100"
-        >
-          {{ rewardProgress }}%
+<body>
+    <app-navbar></app-navbar>
+    <header class="bg-primary text-white py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-3 fw-bold mb-4">Level Up Your Productivity</h1>
+                    <p class="lead mb-4">Transform boring tasks into epic quests. Earn XP, unlock achievements, and become the ultimate productivity hero!</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="btn btn-light btn-lg">Start Your Journey</a>
+                        <a href="#features" class="btn btn-outline-light btn-lg">Learn More</a>
+                    </div>
+                </div>
+  
+            </div>
         </div>
-      </div>
-      <p class="reward-info">
-        You've earned <strong>{{ earnedRewards }}</strong> out of
-        <strong>{{ totalRewards }}</strong> points!
-      </p>
-    </div>
-  </div>
-</div>
+    </header>
 
-<app-footer></app-footer>
+    <section class="py-5 bg-light">
+        <div class="container text-center">
+            <h2 class="mb-5">Why Focusmate?</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-gamepad fa-3x text-primary mb-3"></i>
+                            <h4 class="card-title">Gamified Experience</h4>
+                            <p class="card-text">Turn every task into an adventure. Earn XP points and level up as you complete your daily quests.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-trophy fa-3x text-warning mb-3"></i>
+                            <h4 class="card-title">Achievements & Rewards</h4>
+                            <p class="card-text">Unlock badges, achievements, and special rewards as you progress through your productivity journey.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+                            <h4 class="card-title">Track Your Progress</h4>
+                            <p class="card-text">Visualize your productivity with detailed stats, charts, and your personal level progression.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Powerful Features</h2>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-star fa-2x text-primary"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5>XP & Leveling System</h5>
+                            <p>Gain experience points for every completed task and watch your level grow</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-flag fa-2x text-danger"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5>Priority Quests</h5>
+                            <p>Assign priority levels to tasks and earn bonus XP for high-priority missions</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-bell fa-2x text-info"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5>Smart Reminders</h5>
+                            <p>Never miss a quest with intelligent notifications and deadline tracking</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-users fa-2x text-success"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5>Guild Challenges</h5>
+                            <p>Join forces with friends and compete in productivity challenges</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-palette fa-2x text-warning"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5>Custom Themes</h5>
+                            <p>Personalize your quest board with fantasy, sci-fi, or modern themes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-sync fa-2x text-secondary"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5>Cross-Platform Sync</h5>
+                            <p>Access your quests anywhere - mobile, tablet, or desktop</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Choose Your Adventure</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-white text-center py-4">
+                            <h3 class="mb-0">Free Adventurer</h3>
+                        </div>
+                        <div class="card-body">
+                            <h2 class="text-center mb-4">$0<small class="text-muted">/month</small></h2>
+                            <ul class="list-unstyled">
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Up to 50 active quests</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Basic XP & leveling</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> 5 achievement badges</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Mobile app access</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Email support</li>
+                            </ul>
+                            <div class="text-center">
+                                <a href="#" class="btn btn-outline-primary w-100">Start Free</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100 shadow border-primary">
+                        <div class="card-header bg-primary text-white text-center py-4">
+                            <h3 class="mb-0">Premium Hero</h3>
+                            <span class="badge bg-warning">Most Popular</span>
+                        </div>
+                        <div class="card-body">
+                            <h2 class="text-center mb-4">$9.99<small class="text-muted">/month</small></h2>
+                            <ul class="list-unstyled">
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Unlimited quests</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Advanced XP multipliers</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> 50+ achievement badges</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Custom themes & avatars</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Guild challenges</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Priority support</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Advanced analytics</li>
+                            </ul>
+                            <div class="text-center">
+                                <a href="#" class="btn btn-primary w-100">Upgrade Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="mb-4">About Focusmate</h2>
+                    <p class="lead">Focusmate is more than just a to-do list app - it's a complete productivity game that makes getting things done actually fun.</p>
+                    <p>We believe that mundane tasks shouldn't feel boring. By combining proven gamification techniques with powerful task management features, we've created an app that motivates you to tackle your goals while enjoying the journey.</p>
+                    <p>Join thousands of productive adventurers who have transformed their daily routines into exciting quests. Whether you're managing work projects, personal goals, or daily habits, Focusmate turns every accomplishment into a victory worth celebrating.</p>
+                    <div class="mt-4">
+                        <h5>Our Stats:</h5>
+                        <div class="row mt-3">
+                            <div class="col-6 col-md-3 mb-3">
+                                <h3 class="text-primary">50K+</h3>
+                                <p class="text-muted">Active Heroes</p>
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <h3 class="text-primary">2M+</h3>
+                                <p class="text-muted">Quests Completed</p>
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <h3 class="text-primary">4.9</h3>
+                                <p class="text-muted">App Rating</p>
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <h3 class="text-primary">150+</h3>
+                                <p class="text-muted">Countries</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="https://badgeos.org/wp-content/uploads/2025/08/image4.jpg" width="500" height="400" alt="Description">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-primary text-white py-5">
+        <div class="container text-center">
+            <h2 class="mb-4">Ready to Begin Your Quest?</h2>
+            <p class="lead mb-4">Start your journey to epic productivity today. No credit card required.</p>
+            <a href="#" class="btn btn-light btn-lg">Create Free Account</a>
+        </div>
+    </section>
+    <app-footer></app-footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
