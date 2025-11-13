@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/user.model";
+import axios from "axios";
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -82,3 +83,49 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const completeTaskAndAddReward = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { taskId, userEmail } = req.body;
+    
+    const taskServiceUrl = "http://localhost:5000/tasks/complete";
+    const taskResponse = await axios.post(taskServiceUrl, { taskId, userEmail });
+
+    if (taskResponse.status !== 200) {
+      res.status(400).json({ message: "Failed to complete task" });
+      return;
+    }
+
+    res.status(200).json(taskResponse.data);
+
+  } catch (err) {
+    console.error("Error in completeTaskAndAddReward:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+export const addReward = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { userEmail, points } = req.body;
+
+    if (!userEmail || typeof points !== 'number') {
+      res.status(400).json({ message: 'userEmail and numeric points are required' });
+      return;
+    }
+
+    const user = await User.findOne({ userEmail: userEmail });
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    user.rewardPoints = (user.rewardPoints || 0) + points;
+    await user.save();
+
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
