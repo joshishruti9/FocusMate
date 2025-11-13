@@ -9,13 +9,11 @@ import { RouterOutlet } from '@angular/router';
   imports: [
     NavbarComponent,
     FooterComponent,
-    RouterOutlet,   // ✅ Add this
+    RouterOutlet, 
   ],
   template: `
     <app-navbar></app-navbar>
-    <div class="container mt-4">
       <router-outlet></router-outlet>
-    </div>
     <app-footer></app-footer>
   `,
   styleUrls: ['./app.component.css']

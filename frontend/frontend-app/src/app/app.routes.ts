@@ -5,7 +5,7 @@ import { TaskComponent } from './components/TaskComponent/task.component';
 import { ShopComponent } from './components/ShopComponent/shop.component';
 import { ViewTasksComponent } from './components/ViewTaskComponent/viewTask.component';
 
-export const routes: Route[] = [
+export const appRoutes: Route[] = [
   { path: '', component: HomeComponent }, // default route
   { path: 'shop', component: ShopComponent },   // shop route
   { path: 'task', component: TaskComponent },  // task route

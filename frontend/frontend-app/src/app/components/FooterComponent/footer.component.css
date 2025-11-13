@@ -1,3 +1,5 @@
 .bg-dark{
-  background-color: #0a0f1f !important;
+  background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
+  font-weight: var(--bs-nav-link-font-weight);
+  color: var(--bs-nav-link-color);
 }
