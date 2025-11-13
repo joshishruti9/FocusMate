@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { TaskService } from '../../services/task.service';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../NavbarComponent/navbar.component';
 import { FooterComponent } from '../FooterComponent/footer.component';
@@ -14,7 +12,7 @@ import { FooterComponent } from '../FooterComponent/footer.component';
 })
 
 export class HomeComponent {
-  earnedRewards: number = 45; // Example: dynamically fetched from user data
+  earnedRewards: number = 45;
   totalRewards: number = 100;
   rewardProgress: number = 0;
 

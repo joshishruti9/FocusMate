@@ -1,67 +1,206 @@
-/* === Base Container === */
-.quest-form-container {
-  min-height: 100vh;
-  background-color: #121418;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* === Card Styling === */
-.quest-form-card {
-  background-color: #1a1d22;
-  border: 2px solid cyan;
-  border-radius: 10px;
-  box-shadow: 0 0 20px cyan;
-  padding: 2rem;
-  width: 100%;
-  max-width: 700px;
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
 }
 
-/* === Title === */
-.quest-form-title {
-  color: cyan;
-  text-shadow: 0 0 10px cyan, 0 0 20px cyan;
-  font-weight: 700;
+.navbar-brand i {
+    color: #FFD700;
 }
 
-/* === Labels === */
-.quest-form-card .form-label {
-  color: cyan;
-  font-weight: 500;
+.card {
+    border-radius: 15px;
+    overflow: hidden;
 }
 
-/* === Input Fields === */
-.quest-form-card .form-control,
-.quest-form-card .form-select {
-  background-color: #0f1114;
-  color: #d1d1d1;
-  border: 1px solid #2acfd4;
-  border-radius: 6px;
+.card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
 }
 
-.quest-form-card .form-control:focus,
-.quest-form-card .form-select:focus {
-  box-shadow: 0 0 8px cyan;
-  border-color: cyan;
-  background-color: #111417;
-  color: white;
+.card-header h2 {
+    font-size: 1.8rem;
 }
 
-/* === Button === */
-.quest-btn {
-  background: linear-gradient(to right, #7f00ff, #00ffff);
-  border: none;
-  color: #000;
-  font-weight: bold;
-  padding: 0.75rem 2rem;
-  border-radius: 6px;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
+.card-header p {
+    font-size: 0.95rem;
+    opacity: 0.95;
 }
 
-.quest-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px #00ffff;
-  color: #000;
+.form-label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-label i {
+    margin-right: 5px;
+}
+
+.form-control,
+.form-select {
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.form-control-lg {
+    font-size: 1.1rem;
+    padding: 1rem;
+}
+
+.form-control.ng-invalid.ng-touched,
+.form-select.ng-invalid.ng-touched {
+    border-color: #dc3545;
+}
+
+.form-control.ng-valid.ng-touched,
+.form-select.ng-valid.ng-touched {
+    border-color: #28a745;
+}
+
+.text-danger {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Date Input Styling */
+input[type="date"] {
+    position: relative;
+    cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.btn {
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-outline-secondary {
+    border: 2px solid #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    transform: translateY(-2px);
+}
+
+.btn i {
+    margin-right: 5px;
+}
+
+.alert-info {
+    background-color: #e7f3ff;
+    border-color: #b3d9ff;
+    border-left: 4px solid #667eea;
+    border-radius: 8px;
+}
+
+.alert-info i {
+    color: #667eea;
+}
+
+.border-warning {
+    border-left: 4px solid #ffc107 !important;
+}
+
+.preview-data p {
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+}
+
+.preview-data p:last-child {
+    margin-bottom: 0;
+}
+
+.preview-data strong {
+    color: #667eea;
+    margin-right: 10px;
+}
+
+/* Footer */
+footer {
+    margin-top: 3rem;
+}
+
+@media (max-width: 768px) {
+    .card-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .btn-lg {
+        padding: 0.6rem 1.2rem;
+        font-size: 1rem;
+    }
+    
+    .d-md-flex {
+        flex-direction: column;
+    }
+    
+    .d-md-flex .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease;
+}
+
+.form-select option {
+    padding: 10px;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.fas, .fab {
+    display: inline-block;
+    width: 20px;
+    text-align: center;
 }

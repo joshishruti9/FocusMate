@@ -1,0 +1,139 @@
+<!DOCTYPE html> 
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>View Pending Quests</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+        <link href="viewTask.component.css" rel="stylesheet">
+    </head>
+<body>
+    <app-navbar></app-navbar>
+        <div class="page-header">
+            <div class="container">
+                <h1><i class="fas fa-list-check"></i> Pending Quests</h1>
+                <p class="lead mb-0">Complete your quests to earn XP and level up!</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row stats-row">
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="stat-card">
+                        <i class="fas fa-tasks text-primary"></i>
+                        <h3>{{ getTotalTasks() }}</h3>
+                        <p>Total Pending</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="stat-card">
+                        <i class="fas fa-flag text-danger"></i>
+                        <h3>{{ getHighPriorityCount() }}</h3>
+                        <p>High Priority</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="stat-card">
+                        <i class="fas fa-clock text-warning"></i>
+                        <h3>{{ getDueTodayCount() }}</h3>
+                        <p>Due Today</p>
+                    </div>
+                </div>
+                <!--<div class="col-md-3 col-sm-6 mb-3">
+                    <div class="stat-card">
+                        <i class="fas fa-star text-success"></i>
+                        <h3>{{ getTotalXP() }}</h3>
+                        <p>Pending XP</p>
+                    </div>
+                </div>-->
+            </div>
+
+        <div class="filter-section">
+            <div class="row align-items-center">
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <label class="form-label mb-2"><i class="fas fa-filter"></i> Filter by Priority</label>
+                    <select class="form-select" [(ngModel)]="filterPriority" (change)="applyFilters()">
+                        <option value="all">All Priorities</option>
+                        <option value="high">High Priority</option>
+                        <option value="medium">Medium Priority</option>
+                        <option value="low">Low Priority</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <label class="form-label mb-2"><i class="fas fa-tags"></i> Filter by Category</label>
+                    <select class="form-select" [(ngModel)]="filterCategory" (change)="applyFilters()">
+                        <option value="all">All Categories</option>
+                        <option value="work">Work</option>
+                        <option value="personal">Personal</option>
+                        <option value="health">Health & Fitness</option>
+                        <option value="learning">Learning</option>
+                        <option value="home">Home</option>
+                        <option value="social">Social</option>
+                        <option value="finance">Finance</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <label class="form-label mb-2"><i class="fas fa-sort"></i> Sort By</label>
+                    <select class="form-select" [(ngModel)]="sortBy" (change)="applySorting()">
+                        <option value="dueDate">Due Date</option>
+                        <option value="priority">Priority</option>
+                        <option value="xp">XP Value</option>
+                        <option value="name">Name</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label mb-2"><i class="fas fa-search"></i> Search</label>
+                    <input type="text" class="form-control" [(ngModel)]="searchTerm" (input)="applyFilters()" placeholder="Search quests...">
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="filteredTasks.length === 0" class="empty-state">
+            <i class="fas fa-check-circle"></i>
+            <h3>No pending quests found!</h3>
+            <p class="text-muted">You're all caught up! Add new quests to continue your journey.</p>
+            <a routerLink="/task" class="btn btn-primary"><i class="fas fa-plus"></i> Add New Quest</a>
+        </div>
+
+        <div *ngFor="let task of filteredTasks" class="task-card priority-{{ task.priority }}">
+            <div class="task-header">
+                <div style="flex: 1;">
+                    <div class="task-title">{{ task.taskName }}</div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <span class="badge badge-priority-{{ task.priority }}">{{ getPriorityText(task.priority) }}</span>
+                        <span class="badge badge-category category-{{ task.category }}">{{ getCategoryIcon(task.category) }} {{ task.category | titlecase }}</span>
+                        <!--<span class="badge badge-xp">+{{ task.xp }} XP</span>-->
+                    </div>
+                </div>
+            </div>
+            
+            <div *ngIf="task.description" class="task-description">{{ task.description }}</div>
+            
+            <div class="task-meta">
+                <div class="task-meta-item">
+                    <i class="fas fa-calendar"></i>
+                    <span [ngClass]="getDueDateClass(task.dueDate)">{{ getDueDateText(task.dueDate) }}</span>
+                </div>
+                <div class="task-meta-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>{{ task.userEmail }}</span>
+                </div>
+            </div>
+            
+            <div class="task-actions">
+                <!--<button class="btn btn-success btn-sm" (click)="completeTask(task.taskId)">
+                    <i class="fas fa-check"></i> Complete Quest
+                </button>-->
+                <button class="btn btn-info btn-sm" (click)="editTask(task.taskId)">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <!--<button class="btn btn-danger btn-sm" (click)="deleteTask(task.taskId)">
+                    <i class="fas fa-trash"></i> Delete
+                </button>-->
+            </div>
+        </div>
+    </div>
+    <app-footer></app-footer>
+</body>
+</html>

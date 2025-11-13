@@ -1,65 +1,171 @@
- <app-navbar></app-navbar>
- <div class="quest-form-container">
-  <div class="quest-form-card">
-    <h2 class="quest-form-title text-center mb-4">New Quest Log Entry</h2>
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <app-navbar></app-navbar>
+      <div class="container py-5">
+          <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+              <div class="card shadow-lg border-0">
+                  <div class="card-header bg-primary text-white text-center py-4">
+                      <h2 class="mb-0"><i class="fas fa-plus-circle"></i> Create New Quest</h2>
+                      <p class="mb-0 mt-2">Add a task and start earning XP!</p>
+                  </div>
+                  <div class="card-body p-4">
+                      <form (ngSubmit)="createTask()" #taskForm="ngForm">
+                          
+                          <div class="mb-4">
+                              <label for="taskName" class="form-label">
+                                  <i class="fas fa-scroll text-primary"></i> Task Name <span class="text-danger">*</span>
+                              </label>
+                              <input 
+                                  type="text" 
+                                  class="form-control form-control-lg" 
+                                  id="taskName" 
+                                  name="taskName"
+                                  [(ngModel)]="task.taskName"
+                                  placeholder="What do you need to accomplish?" 
+                                  required
+                                  #taskNameField="ngModel">
+                              <div *ngIf="taskNameField.invalid && (taskNameField.dirty || taskNameField.touched)" class="text-danger mt-2">
+                                  <small *ngIf="taskNameField.errors?.['required']">Task name is required.</small>
+                              </div>
+                          </div>
 
-    <form (ngSubmit)="createTask()" #taskForm="ngForm">
-       <div class="mb-3">
-        <label for="userEmail" class="form-label">Agent Mail</label>
-        <input
-          type="text"
-          id="userEmail"
-          class="form-control"
-          [(ngModel)]="task.userEmail" 
-          name="userEmail" 
-          required 
-          placeholder="abc@gmail.com"
-        />
-      </div>
+                          <div class="mb-4">
+                              <label for="dueDate" class="form-label">
+                                  <i class="fas fa-calendar text-primary"></i> Due Date <span class="text-danger">*</span>
+                              </label>
+                              <input 
+                                  type="date" 
+                                  class="form-control" 
+                                  id="dueDate"
+                                  name="dueDate"
+                                  [(ngModel)]="task.dueDate"
+                                  [min]="minDate"
+                                  required
+                                  #dueDateField="ngModel">
+                              <div *ngIf="dueDateField.invalid && (dueDateField.dirty || dueDateField.touched)" class="text-danger mt-2">
+                                  <small *ngIf="dueDateField.errors?.['required']">Due date is required.</small>
+                              </div>
+                          </div>
 
-      <div class="mb-3">
-        <label for="taskName" class="form-label">Task Name (Mission Brief)</label>
-        <input
-          type="text"
-          id="taskName"
-          class="form-control"
-          [(ngModel)]="task.taskName" 
-          name="taskName" 
-          required 
-          placeholder="e.g., Defeat the final boss"
-        />
-      </div>
+                          <div class="row mb-4">
+                              <div class="col-md-6 mb-3">
+                                  <label for="priority" class="form-label">
+                                      <i class="fas fa-flag text-primary"></i> Priority <span class="text-danger">*</span>
+                                  </label>
+                                  <select 
+                                      class="form-select" 
+                                      id="priority"
+                                      name="priority"
+                                      [(ngModel)]="task.priority"
+                                      required
+                                      #priorityField="ngModel">
+                                      <option value="">Choose priority...</option>
+                                      <option value="Low">🟢 Low Priority (+10 XP)</option>
+                                      <option value="Medium">🟡 Medium Priority (+25 XP)</option>
+                                      <option value="High">🔴 High Priority (+50 XP)</option>
+                                  </select>
+                                  <div *ngIf="priorityField.invalid && (priorityField.dirty || priorityField.touched)" class="text-danger mt-2">
+                                      <small *ngIf="priorityField.errors?.['required']">Priority is required.</small>
+                                  </div>
+                              </div>
 
-      <div class="mb-3">
-        <label for="dueDate" class="form-label">Due Date (Time Window)</label>
-        <input type="date" id="dueDate" class="form-control" [(ngModel)]="task.dueDate" name="dueDate" [min]="minDate" required />
-      </div>
+                              <div class="col-md-6 mb-3">
+                                  <label for="category" class="form-label">
+                                      <i class="fas fa-tags text-primary"></i> Category <span class="text-danger">*</span>
+                                  </label>
+                                  <select 
+                                      class="form-select" 
+                                      id="category"
+                                      name="category"
+                                      [(ngModel)]="task.category"
+                                      required
+                                      #categoryField="ngModel">
+                                      <option value="">Select category...</option>
+                                      <option value="work">💼 Work</option>
+                                      <option value="personal">👤 Personal</option>
+                                      <option value="health">🏃 Health & Fitness</option>
+                                      <option value="learning">📚 Learning</option>
+                                      <option value="home">🏠 Home</option>
+                                      <option value="social">👥 Social</option>
+                                      <option value="finance">💰 Finance</option>
+                                      <option value="other">🎯 Other</option>
+                                  </select>
+                                  <div *ngIf="categoryField.invalid && (categoryField.dirty || categoryField.touched)" class="text-danger mt-2">
+                                      <small *ngIf="categoryField.errors?.['required']">Category is required.</small>
+                                  </div>
+                              </div>
+                          </div>
 
-      <div class="mb-3">
-        <label for="priority" class="form-label">Priority (Threat Level)</label>
-        <select id="priority" class="form-select" [(ngModel)]="task.priority" name="priority" required >
-          <option>-- Select Threat Level --</option>
-          <option>Low</option>
-          <option>Medium</option>
-          <option>High</option>
-        </select>
-      </div>
+                          <div class="mb-4">
+                              <label for="description" class="form-label">
+                                  <i class="fas fa-align-left text-primary"></i> Description
+                              </label>
+                              <textarea 
+                                  class="form-control" 
+                                  id="description"
+                                  name="description"
+                                  [(ngModel)]="task.description"
+                                  rows="4" 
+                                  placeholder="Add more details about this quest..."></textarea>
+                          </div>
 
-      <div class="mb-4">
-        <label for="category" class="form-label">Category (Faction/Zone)</label>
-        <input
-          type="text"
-          id="category"
-          [(ngModel)]="task.category" 
-          name="category"
-          class="form-control"
-          placeholder="e.g., Side Quest, Main Story"
-        />
-      </div>
+                          <div class="mb-4">
+                              <label for="userEmail" class="form-label">
+                                  <i class="fas fa-envelope text-primary"></i> Your Email <span class="text-danger">*</span>
+                              </label>
+                              <input 
+                                  type="email" 
+                                  class="form-control" 
+                                  id="userEmail"
+                                  name="userEmail"
+                                  [(ngModel)]="task.userEmail"
+                                  placeholder="your.email@example.com" 
+                                  required
+                                  email
+                                  #userEmailField="ngModel">
+                              <div *ngIf="userEmailField.invalid && (userEmailField.dirty || userEmailField.touched)" class="text-danger mt-2">
+                                  <small *ngIf="userEmailField.errors?.['required']">Email is required.</small>
+                                  <small *ngIf="userEmailField.errors?.['email']">Please enter a valid email address.</small>
+                              </div>
+                          </div>
 
-      <div class="text-center">
-        <button type="submit" class="btn quest-btn" [disabled]="taskForm.invalid">Log New Quest</button>
-      </div>
-    </form>
-  </div>
-</div>
+                          <div class="alert alert-info" role="alert">
+                              <i class="fas fa-lightbulb"></i> <strong>Tip:</strong> Higher priority quests give more XP when completed!
+                          </div>
+
+                          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                              <button type="button" class="btn btn-outline-secondary btn-lg">
+                                  <i class="fas fa-times"></i> Cancel
+                              </button>
+                              <button 
+                                  type="submit" 
+                                  class="btn btn-primary btn-lg"
+                                  [disabled]="!taskForm.form.valid">
+                                  <i class="fas fa-plus"></i> Add Quest
+                              </button>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+
+              <div class="card mt-4 border-warning">
+                  <div class="card-body bg-light">
+                      <h5 class="card-title text-warning"><i class="fas fa-trophy"></i> Form Preview</h5>
+                      <div class="preview-data">
+                          <p><strong>Task Name:</strong> {{ task.taskName || 'Not set' }}</p>
+                          <p><strong>Due Date:</strong> {{ task.dueDate || 'Not set' }}</p>
+                          <p><strong>Priority:</strong> {{ task.priority || 'Not set' }}</p>
+                          <p><strong>Category:</strong> {{ task.category || 'Not set' }}</p>
+                          <p><strong>Description:</strong> {{ task.description || 'Not set' }}</p>
+                          <p><strong>Email:</strong> {{ task.userEmail || 'Not set' }}</p>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+        </div>
+        <app-footer></app-footer>
+    </body>
+</html>

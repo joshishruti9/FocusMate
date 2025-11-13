@@ -3,17 +3,18 @@ import { FormsModule } from '@angular/forms';
 import { TaskService } from '../../services/task.service';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../NavbarComponent/navbar.component';
+import { FooterComponent } from "../FooterComponent/footer.component";
 
 @Component({
   selector: 'app-create-task',
   standalone: true, 
-  imports: [FormsModule, CommonModule, NavbarComponent], 
+  imports: [FormsModule, CommonModule, FooterComponent, NavbarComponent], 
   providers: [TaskService],
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.css']
 })
 export class TaskComponent {
-  task = { taskName: '', dueDate: '', priority: '', category: '', description: '', userEmail: ''};
+  task = { taskName: '', dueDate: '', priority: '', category: '', description: '', userEmail: '', taskId: ''};
   successMessage: string = '';
   errorMessage: string = '';
   minDate: string;
@@ -32,7 +33,7 @@ export class TaskComponent {
         next: () => {
           console.log('API call successful.'); 
           this.successMessage = 'Success: New Quest Logged! Preparing for deployment.';
-          this.task = { taskName: '', dueDate: '', priority: '', category: '', description: '', userEmail: ''};
+          this.task = { taskName: '', dueDate: '', priority: '', category: '', description: '', userEmail: '', taskId: ''};
         },
         error: err => {
           console.error('API Error (Async):', err);
