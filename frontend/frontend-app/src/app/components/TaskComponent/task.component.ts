@@ -14,7 +14,7 @@ import { FooterComponent } from "../FooterComponent/footer.component";
   styleUrls: ['./task.component.css']
 })
 export class TaskComponent {
-  task = { taskName: '', dueDate: '', priority: '', category: '', description: '', userEmail: '', taskId: ''};
+  task = { taskName: '', dueDate: '', priority: '', category: '', description: '', userEmail: ''};
   successMessage: string = '';
   errorMessage: string = '';
   minDate: string;
@@ -33,7 +33,7 @@ export class TaskComponent {
         next: () => {
           console.log('API call successful.'); 
           this.successMessage = 'Success: New Quest Logged! Preparing for deployment.';
-          this.task = { taskName: '', dueDate: '', priority: '', category: '', description: '', userEmail: '', taskId: ''};
+          this.task = { taskName: '', dueDate: '', priority: '', category: '', description: '', userEmail: ''};
         },
         error: err => {
           console.error('API Error (Async):', err);

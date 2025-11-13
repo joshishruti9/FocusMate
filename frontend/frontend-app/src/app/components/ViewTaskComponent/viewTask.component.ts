@@ -6,7 +6,6 @@ import { FooterComponent } from '../FooterComponent/footer.component';
 import { TaskService } from '../../services/task.service';
 
 interface Task {
-  taskId: string;
   taskName: string;
   description: string;
   dueDate: string;
