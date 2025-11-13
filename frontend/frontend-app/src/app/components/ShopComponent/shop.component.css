@@ -1,0 +1,27 @@
+.shop-card {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Image container with fixed height, image will cover */
+.image-container {
+  height: 350px; /* adjust as needed */
+  overflow: hidden;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* ensures the image fills the container without stretching */
+}
+
+.card-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* keeps button at bottom */
+  padding: 15px;
+  text-align: center;
+}
+
+
