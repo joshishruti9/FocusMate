@@ -21,7 +21,7 @@ interface Task {
 @Component({
   selector: 'app-view-tasks',
   standalone: true,
-  imports: [FormsModule, CommonModule, NavbarComponent, FooterComponent], 
+  imports: [FormsModule, CommonModule], 
    providers: [TaskService],
   templateUrl: './viewTask.component.html',
   styleUrls: ['./viewTask.component.css']
@@ -126,12 +126,19 @@ export class ViewTasksComponent implements OnInit {
           console.error('Error completing task:', error);
         }
       });
-      alert('Quest "${task.taskName}" completed!\nYou earned XP!');
+      alert('Quest completed!\nYou earned XP!');
       this.tasks = this.tasks.filter(t => t._id !== id);
       this.applyFilters();
     }
   }
 
+  getTotalXP(): number {
+    return this.filteredTasks.reduce((total, task) => {
+      const priorityPoints: { [key: string]: number } = { Low: 10, Medium: 30, High: 50 };
+      return total + (priorityPoints[task.priority] || 0);
+    }, 0);
+  }
+  
   editTask(id: string, task: Task): void {
     console.log('Edit task:', task);
     this.taskService.editTask(task, '').subscribe({
