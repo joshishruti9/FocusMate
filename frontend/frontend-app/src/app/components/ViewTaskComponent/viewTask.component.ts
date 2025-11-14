@@ -6,12 +6,16 @@ import { FooterComponent } from '../FooterComponent/footer.component';
 import { TaskService } from '../../services/task.service';
 
 interface Task {
+  _id: string;
+  taskId: string;
   taskName: string;
   description: string;
   dueDate: string;
   priority: string;
   category: string;
   userEmail: string;
+  isCompleted?: boolean;
+  __v?: number;
 }
 
 @Component({
@@ -111,27 +115,39 @@ export class ViewTasksComponent implements OnInit {
     });
   }
 
-  /*completeTask(id: number): void {
+  completeTask(id: string): void {
     const task = this.tasks.find(t => t.taskId === id);
     if (task) {
-      alert(`🎉 Quest "${task.taskName}" completed!\nYou earned XP!`);
-      this.tasks = this.tasks.filter(t => t.taskId !== id);
+      alert('Quest "${task.taskName}" completed!\nYou earned XP!');
+      this.tasks = this.tasks.filter(t => t._id !== id);
       this.applyFilters();
     }
-  }*/
-
-  editTask(id: string): void {
-    // Navigate to edit page or open edit modal
-    console.log('Edit task:', id);
-    alert(`Edit functionality for task ${id} - This would navigate to edit page in a real application`);
   }
 
-  /*deleteTask(id: number): void {
-    if (confirm('Are you sure you want to delete this quest?')) {
-      this.tasks = this.tasks.filter(t => t.taskId !== id);
-      this.applyFilters();
+  editTask(id: string, task: Task): void {
+    console.log('Edit task:', task);
+    this.taskService.editTask(task, '').subscribe({
+      next: (updatedTask) => {
+        console.log('Task updated successfully:', updatedTask);
+      },
+      error: (error) => {
+        console.error('Error updating task:', error);
+      }
+    });
+  }
+
+  deleteTask(taskId: string): void {
+  this.taskService.deleteTask(taskId).subscribe({
+    next: (response) => {
+      console.log("Task deleted:", response);
+      this.tasks = this.tasks.filter(t => t._id !== taskId);
+      this.filteredTasks = [...this.tasks];
+    },
+    error: (err) => {
+      console.error("Delete error:", err);
     }
-  }*/
+  });
+}
 
   // Helper methods for stats
   getTotalTasks(): number {

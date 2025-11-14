@@ -56,7 +56,7 @@ describe('Task Controller CRUD Tests', () => {
   //GetTaskById Tests
   describe('getTaskbyId', () => {
     it('should return task when found', async () => {
-      const mockTask = { taskId: 'uuid-1', taskName: 'Task A', priority: 'High', userEmail: 'a@b.com' };
+      const mockTask = { _id: 'uuid-1', taskName: 'Task A', priority: 'High', userEmail: 'a@b.com' };
       (Task.findOne as jest.Mock).mockResolvedValue(mockTask);
 
       const req = { params: { id: 'uuid-1' } } as unknown as Request;
@@ -64,7 +64,7 @@ describe('Task Controller CRUD Tests', () => {
 
       await getTaskbyId(req, res);
 
-      expect((Task.findOne as jest.Mock).mock.calls[0][0]).toEqual({ taskId: 'uuid-1' });
+      expect((Task.findOne as jest.Mock).mock.calls[0][0]).toEqual({ _id: 'uuid-1' });
       expect((res.json as jest.Mock).mock.calls[0][0]).toBe(mockTask);
     });
 
@@ -104,7 +104,7 @@ describe('Task Controller CRUD Tests', () => {
         description: 'Test task',
       };
 
-      const mockTask = { taskId: 'uuid-new', ...taskData };
+      const mockTask = { _id: 'uuid-new', ...taskData };
       const mockInstance = {
         save: jest.fn().mockResolvedValue(mockTask),
       };
@@ -140,7 +140,7 @@ describe('Task Controller CRUD Tests', () => {
   describe('updateTask', () => {
     it('should update task and return 200', async () => {
       const updateData = { taskName: 'Updated Task', priority: 'High' };
-      const updatedTask = { taskId: 'uuid-1', ...updateData };
+      const updatedTask = { _id: 'uuid-1', ...updateData };
 
       (Task.findOneAndUpdate as jest.Mock).mockResolvedValue(updatedTask);
 
@@ -149,7 +149,7 @@ describe('Task Controller CRUD Tests', () => {
 
       await updateTask(req, res);
 
-      expect((Task.findOneAndUpdate as jest.Mock).mock.calls[0][0]).toEqual({ taskId: 'uuid-1' });
+      expect((Task.findOneAndUpdate as jest.Mock).mock.calls[0][0]).toEqual({ _id: 'uuid-1' });
       expect((res.status as jest.Mock).mock.calls[0][0]).toBe(200);
       expect((res.json as jest.Mock).mock.calls[0][0]).toBe(updatedTask);
     });
@@ -181,7 +181,7 @@ describe('Task Controller CRUD Tests', () => {
   //DeleteTask Tests
   describe('deleteTask', () => {
     it('should delete task and return 200', async () => {
-      const deletedTask = { taskId: 'uuid-1', taskName: 'Task' };
+      const deletedTask = { _id: 'uuid-1', taskName: 'Task' };
       (Task.findOneAndDelete as jest.Mock).mockResolvedValue(deletedTask);
 
       const req = { params: { id: 'uuid-1' } } as unknown as Request;
@@ -189,7 +189,7 @@ describe('Task Controller CRUD Tests', () => {
 
       await deleteTask(req, res);
 
-      expect((Task.findOneAndDelete as jest.Mock).mock.calls[0][0]).toEqual({ taskId: 'uuid-1' });
+      expect((Task.findOneAndDelete as jest.Mock).mock.calls[0][0]).toEqual({ _id: 'uuid-1' });
       expect((res.status as jest.Mock).mock.calls[0][0]).toBe(200);
       expect((res.json as jest.Mock).mock.calls[0][0]).toEqual(
         expect.objectContaining({ message: 'Task deleted successfully', task: deletedTask })

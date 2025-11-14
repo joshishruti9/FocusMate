@@ -10,7 +10,7 @@ export const appRoutes: Route[] = [
   { path: 'shop', component: ShopComponent },   // shop route
   { path: 'task', component: TaskComponent },  // task route
   {path: 'viewTasks', component: ViewTasksComponent},  // view tasks route
-  { path: '**', redirectTo: 'home' } // fallback route
+  { path: '**', component: HomeComponent } // fallback route
 ];
 
 

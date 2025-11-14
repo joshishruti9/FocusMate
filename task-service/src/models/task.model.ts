@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import { v4 as uuidv4 } from 'uuid';
 
 const taskSchema = new mongoose.Schema({
-  taskId: { type: String, required: true, unique: true, default: () => uuidv4() },
   userEmail: { type: String, required: true },
   taskName: { type: String, required: true },
   dueDate: { type: String, required: true },

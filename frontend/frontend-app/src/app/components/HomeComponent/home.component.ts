@@ -12,15 +12,8 @@ import { FooterComponent } from '../FooterComponent/footer.component';
 })
 
 export class HomeComponent {
-  earnedRewards: number = 45;
-  totalRewards: number = 100;
-  rewardProgress: number = 0;
-
   ngOnInit(): void {
-    this.calculateRewardProgress();
+    
   }
 
-  calculateRewardProgress(): void {
-    this.rewardProgress = (this.earnedRewards / this.totalRewards) * 100;
-  }
 }
