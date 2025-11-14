@@ -19,7 +19,6 @@ export async function completeTask(taskId: string): Promise<CompleteResult> {
   const points = pointsMap[priority] ?? 10;
 
   const completed = new CompletedTask({
-    taskId: task.taskId,
     userEmail: task.userEmail,
     taskName: task.taskName,
     dueDate: task.dueDate,
@@ -36,5 +35,5 @@ export async function completeTask(taskId: string): Promise<CompleteResult> {
   // Delete by taskId
   await Task.findOneAndDelete({ taskId });
 
-  return { userEmail: task.userEmail, points, completedTaskId: task.taskId };
+  return { userEmail: task.userEmail, points};
 }

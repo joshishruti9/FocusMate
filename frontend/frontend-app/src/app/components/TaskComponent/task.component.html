@@ -21,7 +21,7 @@
                                   class="form-control form-control-lg" 
                                   id="taskName" 
                                   name="taskName"
-                                  [(ngModel)]="task.taskName"
+                                  [(ngModel)]="CreateTask .taskName"
                                   placeholder="What do you need to accomplish?" 
                                   required
                                   #taskNameField="ngModel">
@@ -39,7 +39,7 @@
                                   class="form-control" 
                                   id="dueDate"
                                   name="dueDate"
-                                  [(ngModel)]="task.dueDate"
+                                  [(ngModel)]="CreateTask .dueDate"
                                   [min]="minDate"
                                   required
                                   #dueDateField="ngModel">
@@ -57,12 +57,12 @@
                                       class="form-select" 
                                       id="priority"
                                       name="priority"
-                                      [(ngModel)]="task.priority"
+                                      [(ngModel)]="CreateTask .priority"
                                       required
                                       #priorityField="ngModel">
                                       <option value="">Choose priority...</option>
                                       <option value="Low">🟢 Low Priority (+10 XP)</option>
-                                      <option value="Medium">🟡 Medium Priority (+25 XP)</option>
+                                      <option value="Medium">🟡 Medium Priority (+30 XP)</option>
                                       <option value="High">🔴 High Priority (+50 XP)</option>
                                   </select>
                                   <div *ngIf="priorityField.invalid && (priorityField.dirty || priorityField.touched)" class="text-danger mt-2">
@@ -78,7 +78,7 @@
                                       class="form-select" 
                                       id="category"
                                       name="category"
-                                      [(ngModel)]="task.category"
+                                      [(ngModel)]="CreateTask .category"
                                       required
                                       #categoryField="ngModel">
                                       <option value="">Select category...</option>
@@ -105,7 +105,7 @@
                                   class="form-control" 
                                   id="description"
                                   name="description"
-                                  [(ngModel)]="task.description"
+                                  [(ngModel)]="CreateTask .description"
                                   rows="4" 
                                   placeholder="Add more details about this quest..."></textarea>
                           </div>
@@ -119,7 +119,7 @@
                                   class="form-control" 
                                   id="userEmail"
                                   name="userEmail"
-                                  [(ngModel)]="task.userEmail"
+                                  [(ngModel)]="CreateTask .userEmail"
                                   placeholder="your.email@example.com" 
                                   required
                                   email
@@ -153,12 +153,12 @@
                   <div class="card-body bg-light">
                       <h5 class="card-title text-warning"><i class="fas fa-trophy"></i> Form Preview</h5>
                       <div class="preview-data">
-                          <p><strong>Task Name:</strong> {{ task.taskName || 'Not set' }}</p>
-                          <p><strong>Due Date:</strong> {{ task.dueDate || 'Not set' }}</p>
-                          <p><strong>Priority:</strong> {{ task.priority || 'Not set' }}</p>
-                          <p><strong>Category:</strong> {{ task.category || 'Not set' }}</p>
-                          <p><strong>Description:</strong> {{ task.description || 'Not set' }}</p>
-                          <p><strong>Email:</strong> {{ task.userEmail || 'Not set' }}</p>
+                          <p><strong>Task Name:</strong> {{ CreateTask .taskName || 'Not set' }}</p>
+                          <p><strong>Due Date:</strong> {{ CreateTask .dueDate || 'Not set' }}</p>
+                          <p><strong>Priority:</strong> {{ CreateTask .priority || 'Not set' }}</p>
+                          <p><strong>Category:</strong> {{ CreateTask .category || 'Not set' }}</p>
+                          <p><strong>Description:</strong> {{ CreateTask .description || 'Not set' }}</p>
+                          <p><strong>Email:</strong> {{ CreateTask .userEmail || 'Not set' }}</p>
                       </div>
                     </div>
                   </div>
