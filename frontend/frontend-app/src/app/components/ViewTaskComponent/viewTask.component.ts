@@ -103,7 +103,7 @@ export class ViewTasksComponent implements OnInit {
           return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
         
         case 'priority':
-          const priorityOrder: { [key: string]: number } = { high: 3, medium: 2, low: 1 };
+          const priorityOrder: { [key: string]: number } = { High: 3, Medium: 2, Low: 1 };
           return priorityOrder[b.priority] - priorityOrder[a.priority];
         
         case 'name':
@@ -149,13 +149,12 @@ export class ViewTasksComponent implements OnInit {
   });
 }
 
-  // Helper methods for stats
   getTotalTasks(): number {
     return this.filteredTasks.length;
   }
 
   getHighPriorityCount(): number {
-    return this.filteredTasks.filter(t => t.priority === 'high').length;
+    return this.filteredTasks.filter(t => t.priority === 'High').length;
   }
 
   getDueTodayCount(): number {
@@ -163,12 +162,11 @@ export class ViewTasksComponent implements OnInit {
     return this.filteredTasks.filter(t => t.dueDate === today).length;
   }
 
-  // Helper methods for display
   getPriorityText(priority: string): string {
     const priorityText: { [key: string]: string } = {
-      low: 'Low Priority',
-      medium: 'Medium Priority',
-      high: 'High Priority'
+      Low: 'Low Priority',
+      Medium: 'Medium Priority',
+      High: 'High Priority'
     };
     return priorityText[priority] || priority;
   }
