@@ -1,13 +1,14 @@
 import mongoose from "mongoose";
-import { runInNewContext } from "vm";
+import { v4 as uuidv4 } from 'uuid';
 
 const taskSchema = new mongoose.Schema({
-  userEmail: {type: String, required: true},
-  taskName: {type: String, required: true},
-  dueDate: {type: String, required: true},
-  category: {type: String},
-  priority: {type: String, enum: ["Low", "Medium", "High"], default: "Low", required: true},
-  description: {type: String, default: ""},
+  taskId: { type: String, required: true, unique: true, default: () => uuidv4() },
+  userEmail: { type: String, required: true },
+  taskName: { type: String, required: true },
+  dueDate: { type: String, required: true },
+  category: { type: String },
+  priority: { type: String, enum: ["Low", "Medium", "High"], default: "Low", required: true },
+  description: { type: String, default: "" },
   isCompleted: { type: Boolean, default: false },
 });
 

@@ -3,11 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { TaskService } from '../../services/task.service';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../NavbarComponent/navbar.component';
+import { FooterComponent } from "../FooterComponent/footer.component";
 
 @Component({
   selector: 'app-create-task',
   standalone: true, 
-  imports: [FormsModule, CommonModule, NavbarComponent], 
+  imports: [FormsModule, CommonModule, FooterComponent, NavbarComponent], 
   providers: [TaskService],
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.css']
