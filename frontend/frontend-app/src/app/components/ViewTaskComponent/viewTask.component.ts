@@ -116,8 +116,16 @@ export class ViewTasksComponent implements OnInit {
   }
 
   completeTask(id: string): void {
-    const task = this.tasks.find(t => t.taskId === id);
+    const task = this.tasks.find(t => t._id === id);
     if (task) {
+      this.taskService.completeTask(task, id).subscribe({
+        next: () => {
+          console.log('Task marked as completed:', id);
+        },
+        error: (error: any) => {
+          console.error('Error completing task:', error);
+        }
+      });
       alert('Quest "${task.taskName}" completed!\nYou earned XP!');
       this.tasks = this.tasks.filter(t => t._id !== id);
       this.applyFilters();

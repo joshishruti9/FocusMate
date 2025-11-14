@@ -115,17 +115,18 @@ export const deleteTask = async (req: Request, res: Response): Promise<void> => 
 
 export const markTaskComplete = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { taskId, userEmail } = req.body;
+    const id  = req.params.id;
+    const { userEmail } = req.body;
 
-    if (!taskId || !userEmail) {
-      res.status(400).json({ message: 'taskId and userEmail are required' });
+    if (!id) {
+      res.status(400).json({ message: 'Id is required' });
       return;
     }
 
-    const result = await taskService.completeTask(taskId);
+    const result = await taskService.completeTask(id);
 
     try {
-      await userClient.addReward(userEmail, result.points);
+      await userClient.addReward(id, userEmail, result.points);
     } catch (err) {
       console.error('Failed to add reward to user:', (err as any).message || err);
     }
