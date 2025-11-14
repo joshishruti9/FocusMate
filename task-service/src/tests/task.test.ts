@@ -142,20 +142,20 @@ describe('Task Controller CRUD Tests', () => {
       const updateData = { taskName: 'Updated Task', priority: 'High' };
       const updatedTask = { _id: 'uuid-1', ...updateData };
 
-      (Task.findOneAndUpdate as jest.Mock).mockResolvedValue(updatedTask);
+      (Task.findByIdAndUpdate as jest.Mock).mockResolvedValue(updatedTask);
 
       const req = { params: { id: 'uuid-1' }, body: updateData } as unknown as Request;
       const res = mockRes() as unknown as Response;
 
       await updateTask(req, res);
 
-      expect((Task.findOneAndUpdate as jest.Mock).mock.calls[0][0]).toEqual({ _id: 'uuid-1' });
+      expect((Task.findByIdAndUpdate as jest.Mock).mock.calls[0][0]).toBe('uuid-1');
       expect((res.status as jest.Mock).mock.calls[0][0]).toBe(200);
       expect((res.json as jest.Mock).mock.calls[0][0]).toBe(updatedTask);
     });
 
     it('should return 404 when task not found', async () => {
-      (Task.findOneAndUpdate as jest.Mock).mockResolvedValue(null);
+      (Task.findByIdAndUpdate as jest.Mock).mockResolvedValue(null);
 
       const req = { params: { id: 'missing' }, body: { taskName: 'New' } } as unknown as Request;
       const res = mockRes() as unknown as Response;
@@ -167,7 +167,7 @@ describe('Task Controller CRUD Tests', () => {
     });
 
     it('should return 500 on error', async () => {
-      (Task.findOneAndUpdate as jest.Mock).mockRejectedValue(new Error('DB error'));
+      (Task.findByIdAndUpdate as jest.Mock).mockRejectedValue(new Error('DB error'));
 
       const req = { params: { id: 'uuid-1' }, body: {} } as unknown as Request;
       const res = mockRes() as unknown as Response;
@@ -182,14 +182,14 @@ describe('Task Controller CRUD Tests', () => {
   describe('deleteTask', () => {
     it('should delete task and return 200', async () => {
       const deletedTask = { _id: 'uuid-1', taskName: 'Task' };
-      (Task.findOneAndDelete as jest.Mock).mockResolvedValue(deletedTask);
+      (Task.findByIdAndDelete as jest.Mock).mockResolvedValue(deletedTask);
 
       const req = { params: { id: 'uuid-1' } } as unknown as Request;
       const res = mockRes() as unknown as Response;
 
       await deleteTask(req, res);
 
-      expect((Task.findOneAndDelete as jest.Mock).mock.calls[0][0]).toEqual({ _id: 'uuid-1' });
+      expect((Task.findByIdAndDelete as jest.Mock).mock.calls[0][0]).toBe('uuid-1');
       expect((res.status as jest.Mock).mock.calls[0][0]).toBe(200);
       expect((res.json as jest.Mock).mock.calls[0][0]).toEqual(
         expect.objectContaining({ message: 'Task deleted successfully', task: deletedTask })
@@ -197,7 +197,7 @@ describe('Task Controller CRUD Tests', () => {
     });
 
     it('should return 404 when task not found', async () => {
-      (Task.findOneAndDelete as jest.Mock).mockResolvedValue(null);
+      (Task.findByIdAndDelete as jest.Mock).mockResolvedValue(null);
 
       const req = { params: { id: 'missing' } } as unknown as Request;
       const res = mockRes() as unknown as Response;
@@ -209,7 +209,7 @@ describe('Task Controller CRUD Tests', () => {
     });
 
     it('should return 500 on error', async () => {
-      (Task.findOneAndDelete as jest.Mock).mockRejectedValue(new Error('DB error'));
+      (Task.findByIdAndDelete as jest.Mock).mockRejectedValue(new Error('DB error'));
 
       const req = { params: { id: 'uuid-1' } } as unknown as Request;
       const res = mockRes() as unknown as Response;
