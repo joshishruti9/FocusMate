@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 const completedTaskSchema = new mongoose.Schema({
-  taskId: { type: String, required: true },
   userEmail: { type: String, required: true },
   taskName: { type: String, required: true },
   dueDate: { type: String, required: true },

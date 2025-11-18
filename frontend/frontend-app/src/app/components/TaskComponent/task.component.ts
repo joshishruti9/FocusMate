@@ -1,14 +1,12 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { TaskService } from '../../services/task.service';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from '../NavbarComponent/navbar.component';
-import { FooterComponent } from "../FooterComponent/footer.component";
 
 @Component({
   selector: 'app-create-task',
   standalone: true, 
-  imports: [FormsModule, CommonModule, FooterComponent, NavbarComponent], 
+  imports: [FormsModule, CommonModule], 
   providers: [TaskService],
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.css']
@@ -44,6 +42,10 @@ export class TaskComponent {
       this.errorMessage = 'Error: A critical app error occurred during submission.';
     }
   }
+
+  onCancel(form: NgForm) {
+  form.resetForm(); 
+}
 
   viewTasks() {
     this.taskService.getTasks().subscribe(tasks => {

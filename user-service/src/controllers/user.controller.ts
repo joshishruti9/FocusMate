@@ -43,7 +43,6 @@ export const getUserbyId = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -108,13 +107,12 @@ export const completeTaskAndAddReward = async (req: Request, res: Response): Pro
 export const addReward = async (req: Request, res: Response): Promise<void> => {
   try {
     const { userEmail, points } = req.body;
-
+    console.log('Adding reward points:', userEmail, points);
     if (!userEmail || typeof points !== 'number') {
       res.status(400).json({ message: 'userEmail and numeric points are required' });
       return;
     }
-
-    const user = await User.findOne({ userEmail: userEmail });
+    const user = await User.findOne({ userEmail });
     if (!user) {
       res.status(404).json({ message: 'User not found' });
       return;
@@ -122,6 +120,7 @@ export const addReward = async (req: Request, res: Response): Promise<void> => {
 
     user.rewardPoints = (user.rewardPoints || 0) + points;
     await user.save();
+     res.status(200).json({message: "Reward points added successfully",rewardPoints: user.rewardPoints});
 
   } catch (err) {
     console.error('Error:', err);

@@ -7,11 +7,10 @@ export interface CompleteResult {
   completedTaskId?: string;
 }
 
-export async function completeTask(taskId: string): Promise<CompleteResult> {
-  if (!taskId) throw new Error('taskId is required');
+export async function completeTask(_id: string): Promise<CompleteResult> {
+  if (!_id) throw new Error('taskId is required');
 
-  // Find by the application-level taskId (not Mongo _id)
-  const task = await Task.findOne({ taskId });
+  const task = await Task.findById({ _id });
   if (!task) throw new Error('Task not found');
 
   const priority = (task.priority || 'Low').toLowerCase();
@@ -32,8 +31,7 @@ export async function completeTask(taskId: string): Promise<CompleteResult> {
 
   const saved = await completed.save();
 
-  // Delete by taskId
-  await Task.findOneAndDelete({ taskId });
+  await Task.findByIdAndDelete({ _id });
 
   return { userEmail: task.userEmail, points};
 }

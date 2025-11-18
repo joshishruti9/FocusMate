@@ -21,7 +21,7 @@ interface Task {
 @Component({
   selector: 'app-view-tasks',
   standalone: true,
-  imports: [FormsModule, CommonModule, NavbarComponent, FooterComponent], 
+  imports: [FormsModule, CommonModule], 
    providers: [TaskService],
   templateUrl: './viewTask.component.html',
   styleUrls: ['./viewTask.component.css']
@@ -103,7 +103,7 @@ export class ViewTasksComponent implements OnInit {
           return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
         
         case 'priority':
-          const priorityOrder: { [key: string]: number } = { high: 3, medium: 2, low: 1 };
+          const priorityOrder: { [key: string]: number } = { High: 3, Medium: 2, Low: 1 };
           return priorityOrder[b.priority] - priorityOrder[a.priority];
         
         case 'name':
@@ -116,14 +116,29 @@ export class ViewTasksComponent implements OnInit {
   }
 
   completeTask(id: string): void {
-    const task = this.tasks.find(t => t.taskId === id);
+    const task = this.tasks.find(t => t._id === id);
     if (task) {
-      alert('Quest "${task.taskName}" completed!\nYou earned XP!');
+      this.taskService.completeTask(task, id).subscribe({
+        next: () => {
+          console.log('Task marked as completed:', id);
+        },
+        error: (error: any) => {
+          console.error('Error completing task:', error);
+        }
+      });
+      alert('Quest completed!\nYou earned XP!');
       this.tasks = this.tasks.filter(t => t._id !== id);
       this.applyFilters();
     }
   }
 
+  getTotalXP(): number {
+    return this.filteredTasks.reduce((total, task) => {
+      const priorityPoints: { [key: string]: number } = { Low: 10, Medium: 30, High: 50 };
+      return total + (priorityPoints[task.priority] || 0);
+    }, 0);
+  }
+  
   editTask(id: string, task: Task): void {
     console.log('Edit task:', task);
     this.taskService.editTask(task, '').subscribe({
@@ -149,13 +164,12 @@ export class ViewTasksComponent implements OnInit {
   });
 }
 
-  // Helper methods for stats
   getTotalTasks(): number {
     return this.filteredTasks.length;
   }
 
   getHighPriorityCount(): number {
-    return this.filteredTasks.filter(t => t.priority === 'high').length;
+    return this.filteredTasks.filter(t => t.priority === 'High').length;
   }
 
   getDueTodayCount(): number {
@@ -163,12 +177,11 @@ export class ViewTasksComponent implements OnInit {
     return this.filteredTasks.filter(t => t.dueDate === today).length;
   }
 
-  // Helper methods for display
   getPriorityText(priority: string): string {
     const priorityText: { [key: string]: string } = {
-      low: 'Low Priority',
-      medium: 'Medium Priority',
-      high: 'High Priority'
+      Low: 'Low Priority',
+      Medium: 'Medium Priority',
+      High: 'High Priority'
     };
     return priorityText[priority] || priority;
   }
