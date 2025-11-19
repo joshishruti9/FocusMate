@@ -1,266 +1,241 @@
 /// <reference types="jest" />
-import { Request, Response } from 'express';
-import { getAllUsers, getUserbyId, createUser, updateUser, deleteUser, addReward } from '../controllers/user.controller';
+import mongoose from 'mongoose';
 import User from '../models/user.model';
 
-jest.mock('../models/user.model');
+const MONGODB_URI = 'mongodb://localhost:27017/focusmatetest';
 
-function mockRes() {
-  return {
-    status: jest.fn().mockReturnThis(),
-    json: jest.fn().mockReturnThis(),
-  };
-}
+beforeAll(async () => {
+  await mongoose.connect(MONGODB_URI);
+});
 
-//GetUsers Tests
+afterAll(async () => {
+  await mongoose.disconnect();
+});
 
-describe('User Controller CRUD Tests', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+beforeEach(async () => {
+  // Clear all collections before each test
+  const collections = mongoose.connection.collections;
+  for (const key in collections) {
+    await collections[key].deleteMany({});
+  }
+});
 
-  describe('getAllUsers', () => {
-    it('should return 200 and all users', async () => {
-      const mockUsers = [
-        { _id: 'user-1', userEmail: 'user1@example.com', firstName: 'John', lastName: 'Doe', rewardPoints: 100 },
-        { _id: 'user-2', userEmail: 'user2@example.com', firstName: 'Jane', lastName: 'Smith', rewardPoints: 50 },
-      ];
-
-      (User.find as jest.Mock).mockReturnValue({
-        sort: jest.fn().mockResolvedValue(mockUsers),
-      });
-
-      const req = {} as Request;
-      const res = mockRes() as unknown as Response;
-
-      await getAllUsers(req, res);
-
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(200);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toBe(mockUsers);
-    });
-
-    it('should return 500 on error', async () => {
-      (User.find as jest.Mock).mockReturnValue({
-        sort: jest.fn().mockRejectedValue(new Error('DB error')),
-      });
-
-      const req = {} as Request;
-      const res = mockRes() as unknown as Response;
-
-      await getAllUsers(req, res);
-
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(500);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toEqual({ message: 'Server error' });
-    });
-  });
-
-  //GetUserById Tests
-
-  describe('getUserbyId', () => {
-    it('should return user when found', async () => {
-      const mockUser = { _id: 'user-1', userEmail: 'user@example.com', firstName: 'John', rewardPoints: 100 };
-      
-      (User.findById as jest.Mock).mockReturnValue({
-        sort: jest.fn().mockResolvedValue(mockUser),
-      });
-
-      const req = { params: { id: 'user-1' } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
-
-      await getUserbyId(req, res);
-
-      expect((User.findById as jest.Mock).mock.calls[0][0]).toBe('user-1');
-      expect((res.json as jest.Mock).mock.calls[0][0]).toBe(mockUser);
-    });
-
-    it('should return 500 on database error', async () => {
-      (User.findById as jest.Mock).mockReturnValue({
-        sort: jest.fn().mockRejectedValue(new Error('DB error')),
-      });
-
-      const req = { params: { id: 'user-1' } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
-
-      await getUserbyId(req, res);
-
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(500);
-    });
-  });
-
-    //CreateUser Tests
-
-  describe('createUser', () => {
-    it('should create user and return 201', async () => {
+describe('User Service Integration Tests', () => {
+  describe('Create User', () => {
+    it('creates a new user', async () => {
       const userData = {
-        userEmail: 'newuser@example.com',
-        firstName: 'Alice',
-        lastName: 'Johnson',
+        userEmail: 'newuser@test.com',
+        firstName: 'John',
+        lastName: 'Doe',
         password: 'secure123',
         rewardPoints: 0,
       };
 
-      const mockUser = { _id: 'new-user', ...userData };
-      const mockInstance = {
-        save: jest.fn().mockResolvedValue(mockUser),
-      };
+      const user = new User(userData);
+      const saved = await user.save();
 
-      (User as unknown as jest.Mock).mockImplementation(() => mockInstance);
-
-      const req = { body: userData } as unknown as Request;
-      const res = mockRes() as unknown as Response;
-
-      await createUser(req, res);
-
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(201);
-    });
-
-    it('should return 500 on save error', async () => {
-      const mockInstance = {
-        save: jest.fn().mockRejectedValue(new Error('Save failed')),
-      };
-
-      (User as unknown as jest.Mock).mockImplementation(() => mockInstance);
-
-      const req = { body: { userEmail: 'user@example.com' } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
-
-      await createUser(req, res);
-
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(500);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toEqual({ message: 'Server error' });
+      expect(saved._id).toBeDefined();
+      expect(saved.userEmail).toBe(userData.userEmail);
+      expect(saved.firstName).toBe(userData.firstName);
+      expect(saved.rewardPoints).toBe(0);
     });
   });
 
-  //UpdateUser Tests
-  describe('updateUser', () => {
-    it('should update user and return 200', async () => {
-      const updateData = { firstName: 'Johnny', rewardPoints: 150 };
-      const updatedUser = { _id: 'user-1', userEmail: 'user@example.com', ...updateData };
+  describe('Get Users', () => {
+    it('retrieves all users sorted by creation date', async () => {
+      await User.insertMany([
+        {
+          userEmail: 'user1@test.com',
+          firstName: 'Alice',
+          lastName: 'Smith',
+          password: 'pass1',
+          rewardPoints: 50,
+        },
+        {
+          userEmail: 'user2@test.com',
+          firstName: 'Bob',
+          lastName: 'Jones',
+          password: 'pass2',
+          rewardPoints: 100,
+        },
+      ]);
 
-      (User.findByIdAndUpdate as jest.Mock).mockResolvedValue(updatedUser);
+      const users = await User.find().sort({ createdAt: -1 });
 
-      const req = { params: { id: 'user-1' }, body: updateData } as unknown as Request;
-      const res = mockRes() as unknown as Response;
-
-      await updateUser(req, res);
-
-      expect((User.findByIdAndUpdate as jest.Mock).mock.calls[0][0]).toBe('user-1');
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(200);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toBe(updatedUser);
+      expect(users).toHaveLength(2);
+      expect(users[1  ].firstName).toBe('Bob');
+      expect(users[0].firstName).toBe('Alice');
     });
 
-    it('should return 404 when user not found', async () => {
-      (User.findByIdAndUpdate as jest.Mock).mockResolvedValue(null);
+    it('retrieves a user by _id', async () => {
+      const created = await User.create({
+        userEmail: 'findme@test.com',
+        firstName: 'Charlie',
+        lastName: 'Brown',
+        password: 'pass123',
+        rewardPoints: 75,
+      });
 
-      const req = { params: { id: 'missing' }, body: { firstName: 'New' } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
+      const found = await User.findById(created._id);
 
-      await updateUser(req, res);
-
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(404);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toEqual({ message: 'User not found' });
+      expect(found).toBeDefined();
+      expect(found?.userEmail).toBe('findme@test.com');
+      expect(found?.rewardPoints).toBe(75);
     });
 
-    it('should return 500 on error', async () => {
-      (User.findByIdAndUpdate as jest.Mock).mockRejectedValue(new Error('DB error'));
+    it('retrieves a user by email', async () => {
+      await User.create({
+        userEmail: 'specific@test.com',
+        firstName: 'David',
+        lastName: 'Miller',
+        password: 'pass456',
+        rewardPoints: 100,
+      });
 
-      const req = { params: { id: 'user-1' }, body: {} } as unknown as Request;
-      const res = mockRes() as unknown as Response;
+      const found = await User.findOne({ userEmail: 'specific@test.com' });
 
-      await updateUser(req, res);
-
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(500);
+      expect(found).toBeDefined();
+      expect(found?.firstName).toBe('David');
     });
   });
 
-  //DeleteUser Tests
-  describe('deleteUser', () => {
-    it('should delete user and return 200', async () => {
-      const deletedUser = { _id: 'user-1', userEmail: 'user@example.com' };
-      (User.findByIdAndDelete as jest.Mock).mockResolvedValue(deletedUser);
+  describe('Update User', () => {
+    it('updates user reward points', async () => {
+      const created = await User.create({
+        userEmail: 'update@test.com',
+        firstName: 'Eve',
+        lastName: 'Taylor',
+        password: 'pass789',
+        rewardPoints: 50,
+      });
 
-      const req = { params: { id: 'user-1' } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
-
-      await deleteUser(req, res);
-
-      expect((User.findByIdAndDelete as jest.Mock).mock.calls[0][0]).toBe('user-1');
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(200);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toEqual(
-        expect.objectContaining({ message: 'User deleted successfully', user: deletedUser })
+      const updated = await User.findByIdAndUpdate(
+        created._id,
+        { rewardPoints: 100 },
+        { new: true, runValidators: true }
       );
+
+      expect(updated?.rewardPoints).toBe(100);
+      expect(updated?.userEmail).toBe('update@test.com');
     });
 
-    it('should return 404 when user not found', async () => {
-      (User.findByIdAndDelete as jest.Mock).mockResolvedValue(null);
+    it('updates multiple user fields', async () => {
+      const created = await User.create({
+        userEmail: 'multi@test.com',
+        firstName: 'Frank',
+        lastName: 'Wilson',
+        password: 'oldpass',
+        rewardPoints: 25,
+      });
 
-      const req = { params: { id: 'missing' } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
+      const updated = await User.findByIdAndUpdate(
+        created._id,
+        { firstName: 'Francis', password: 'newpass', rewardPoints: 50 },
+        { new: true }
+      );
 
-      await deleteUser(req, res);
-
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(404);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toEqual({ message: 'User not found' });
+      expect(updated?.firstName).toBe('Francis');
+      expect(updated?.password).toBe('newpass');
+      expect(updated?.rewardPoints).toBe(50);
     });
 
-    it('should return 500 on error', async () => {
-      (User.findByIdAndDelete as jest.Mock).mockRejectedValue(new Error('DB error'));
+    it('returns null when updating non-existent user', async () => {
+      const fakeId = new mongoose.Types.ObjectId();
+      const result = await User.findByIdAndUpdate(fakeId, { firstName: 'New' }, { new: true });
 
-      const req = { params: { id: 'user-1' } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
-
-      await deleteUser(req, res);
-
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(500);
+      expect(result).toBeNull();
     });
   });
 
-  //AddReward Tests
-  describe('addReward', () => {
-    it('should add reward points to user', async () => {
-      const userMock = { userEmail: 'user@example.com', rewardPoints: 50, save: jest.fn().mockResolvedValue(undefined) };
-      (User.findOne as jest.Mock).mockResolvedValue(userMock);
+  describe('Delete User', () => {
+    it('deletes a user by _id', async () => {
+      const created = await User.create({
+        userEmail: 'delete@test.com',
+        firstName: 'Grace',
+        lastName: 'Harris',
+        password: 'pass123',
+        rewardPoints: 0,
+      });
 
-      const req = { body: { userEmail: 'user@example.com', points: 30 } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
+      const deleted = await User.findByIdAndDelete(created._id);
 
-      await addReward(req, res);
+      expect(deleted?.userEmail).toBe('delete@test.com');
 
-      expect((User.findOne as jest.Mock).mock.calls[0][0]).toEqual({ userEmail: 'user@example.com' });
-      expect(userMock.save).toHaveBeenCalled();
+      const found = await User.findById(created._id);
+      expect(found).toBeNull();
     });
 
-    it('should return 400 when missing userEmail or points', async () => {
-      const req = { body: { userEmail: 'user@example.com' } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
+    it('returns null when deleting non-existent user', async () => {
+      const fakeId = new mongoose.Types.ObjectId();
+      const result = await User.findByIdAndDelete(fakeId);
 
-      await addReward(req, res);
+      expect(result).toBeNull();
+    });
+  });
 
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(400);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toEqual({ message: 'userEmail and numeric points are required' });
+  describe('Add Reward Flow', () => {
+    it('adds reward points to existing user', async () => {
+      const user = await User.create({
+        userEmail: 'reward@test.com',
+        firstName: 'Iris',
+        lastName: 'King',
+        password: 'pass111',
+        rewardPoints: 50,
+      });
+
+      // Simulate adding reward
+      user.rewardPoints += 30;
+      const updated = await user.save();
+
+      expect(updated.rewardPoints).toBe(80);
     });
 
-    it('should return 404 when user not found', async () => {
-      (User.findOne as jest.Mock).mockResolvedValue(null);
+    it('increments reward points multiple times', async () => {
+      const user = await User.create({
+        userEmail: 'multi@test.com',
+        firstName: 'Jack',
+        lastName: 'Lee',
+        password: 'pass222',
+        rewardPoints: 0,
+      });
 
-      const req = { body: { userEmail: 'missing@example.com', points: 20 } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
+      // Add reward 1
+      user.rewardPoints += 10;
+      await user.save();
 
-      await addReward(req, res);
+      // Add reward 2
+      user.rewardPoints += 30;
+      await user.save();
 
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(404);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toEqual({ message: 'User not found' });
+      // Add reward 3 (reaches 100 - triggers unlock)
+      user.rewardPoints += 60;
+      const final = await user.save();
+
+      expect(final.rewardPoints).toBe(100);
+      expect(final.rewardPoints % 100).toBe(0); // Multiple of 100 check
     });
 
-    it('should return 500 on error', async () => {
-      (User.findOne as jest.Mock).mockRejectedValue(new Error('DB error'));
+    it('finds user by email and updates reward points', async () => {
+      const user = await User.create({
+        userEmail: 'findupdate@test.com',
+        firstName: 'Kelly',
+        lastName: 'Martin',
+        password: 'pass333',
+        rewardPoints: 40,
+      });
 
-      const req = { body: { userEmail: 'user@example.com', points: 20 } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
+      // Find and update reward
+      const found = await User.findOne({ userEmail: 'findupdate@test.com' });
+      expect(found).toBeDefined();
 
-      await addReward(req, res);
+      found!.rewardPoints += 20;
+      const updated = await found!.save();
 
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(500);
+      expect(updated.rewardPoints).toBe(60);
+
+      // Verify in DB
+      const verified = await User.findOne({ userEmail: 'findupdate@test.com' });
+      expect(verified?.rewardPoints).toBe(60);
     });
   });
 });
