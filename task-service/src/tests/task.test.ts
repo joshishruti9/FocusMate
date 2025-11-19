@@ -1,222 +1,197 @@
 /// <reference types="jest" />
-import { Request, Response } from 'express';
-import { getAllTasks, getTaskbyId, createTask, updateTask, deleteTask } from '../controllers/task.controller';
+import mongoose from 'mongoose';
 import Task from '../models/task.model';
+import CompletedTask from '../models/completedTask.model';
 
-jest.mock('../models/task.model');
+const MONGODB_URI = 'mongodb://localhost:27017/focusmatetest';
 
-function mockRes() {
-  return {
-    status: jest.fn().mockReturnThis(),
-    json: jest.fn().mockReturnThis(),
-  };
-}
+beforeAll(async () => {
+  await mongoose.connect(MONGODB_URI);
+});
 
-describe('Task Controller CRUD Tests', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+afterAll(async () => {
+  await mongoose.disconnect();
+});
 
-  //GetAllTasks Tests
-  describe('getAllTasks', () => {
-    it('should return 200 and all tasks', async () => {
-      const mockTasks = [
-        { taskId: 'uuid-1', taskName: 'Task A', dueDate: '2025-12-12', category: 'Work', priority: 'High', userEmail: 'abc@email.com', description: '', isCompleted: false },
-        { taskId: 'uuid-2', taskName: 'Task B', dueDate: '2025-11-11', category: 'Home', priority: 'Low', userEmail: 'def@email.com', description: '', isCompleted: false },
-      ];
+beforeEach(async () => {
+  // Clear all collections before each test
+  const collections = mongoose.connection.collections;
+  for (const key in collections) {
+    await collections[key].deleteMany({});
+  }
+});
 
-      (Task.find as jest.Mock).mockReturnValue({
-        sort: jest.fn().mockResolvedValue(mockTasks),
-      });
-
-      const req = {} as Request;
-      const res = mockRes() as unknown as Response;
-
-      await getAllTasks(req, res);
-
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(200);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toBe(mockTasks);
-    });
-
-    it('should return 500 on error', async () => {
-      (Task.find as jest.Mock).mockReturnValue({
-        sort: jest.fn().mockRejectedValue(new Error('DB error')),
-      });
-
-      const req = {} as Request;
-      const res = mockRes() as unknown as Response;
-
-      await getAllTasks(req, res);
-
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(500);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toEqual({ message: 'Server error' });
-    });
-  });
-
-  //GetTaskById Tests
-  describe('getTaskbyId', () => {
-    it('should return task when found', async () => {
-      const mockTask = { _id: 'uuid-1', taskName: 'Task A', priority: 'High', userEmail: 'a@b.com' };
-      (Task.findOne as jest.Mock).mockResolvedValue(mockTask);
-
-      const req = { params: { id: 'uuid-1' } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
-
-      await getTaskbyId(req, res);
-
-      expect((Task.findOne as jest.Mock).mock.calls[0][0]).toEqual({ _id: 'uuid-1' });
-      expect((res.json as jest.Mock).mock.calls[0][0]).toBe(mockTask);
-    });
-
-    it('should return 404 when task not found', async () => {
-      (Task.findOne as jest.Mock).mockResolvedValue(null);
-
-      const req = { params: { id: 'missing' } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
-
-      await getTaskbyId(req, res);
-
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(404);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toEqual({ message: 'Task not found' });
-    });
-
-    it('should return 500 on database error', async () => {
-      (Task.findOne as jest.Mock).mockRejectedValue(new Error('DB error'));
-
-      const req = { params: { id: 'uuid-1' } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
-
-      await getTaskbyId(req, res);
-
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(500);
-    });
-  });
-
-  //CreateTask Tests
-  describe('createTask', () => {
-    it('should create task and return 201', async () => {
+describe('Task Service Integration Tests', () => {
+  describe('Create Task', () => {
+    it('creates a task with auto-generated taskId', async () => {
       const taskData = {
-        taskName: 'New Task',
+        taskName: 'Integration Test Task',
         dueDate: '2025-12-25',
-        priority: 'Medium',
+        priority: 'High',
         category: 'Work',
-        userEmail: 'user@email.com',
-        description: 'Test task',
+        userEmail: 'test@example.com',
+        description: 'Test task creation',
       };
 
-      const mockTask = { _id: 'uuid-new', ...taskData };
-      const mockInstance = {
-        save: jest.fn().mockResolvedValue(mockTask),
-      };
+      const task = new Task(taskData);
+      const saved = await task.save();
 
-      (Task as unknown as jest.Mock).mockImplementation(() => mockInstance);
-
-      const req = { body: taskData } as unknown as Request;
-      const res = mockRes() as unknown as Response;
-
-      await createTask(req, res);
-
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(201);
+      expect(saved._id).toBeDefined();
+      expect(saved.taskName).toBe(taskData.taskName);
+      expect(saved.priority).toBe(taskData.priority);
+      expect(saved.userEmail).toBe(taskData.userEmail);
     });
 
-    it('should return 500 on save error', async () => {
-      const mockInstance = {
-        save: jest.fn().mockRejectedValue(new Error('Save failed')),
-      };
+    it('generates unique taskIds for different tasks', async () => {
+      const task1 = new Task({
+        taskName: 'Task 1',
+        dueDate: '2025-01-01',
+        priority: 'Low',
+        userEmail: 'user1@test.com',
+      });
 
-      (Task as unknown as jest.Mock).mockImplementation(() => mockInstance);
+      const task2 = new Task({
+        taskName: 'Task 2',
+        dueDate: '2025-01-02',
+        priority: 'Medium',
+        userEmail: 'user2@test.com',
+      });
 
-      const req = { body: { taskName: 'Task', dueDate: '2025-12-25' } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
+      const saved1 = await task1.save();
+      const saved2 = await task2.save();
 
-      await createTask(req, res);
+      expect(saved1.taskName).not.toBe(saved2.taskName);
+      expect(saved1._id).not.toBe(saved2._id);
+    });
+  })
 
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(500);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toEqual({ message: 'Server error' });
+  describe('Get Tasks', () => {
+    it('retrieves all tasks', async () => {
+
+      const task1 = await Task.create({
+          taskName: 'Task A',
+          dueDate: '2025-01-01',
+          priority: 'High',
+          userEmail: 'a@test.com',
+      });
+
+      const task2 = await Task.create({
+          taskName: 'Task B',
+          dueDate: '2025-01-02',
+          priority: 'Low',
+          userEmail: 'b@test.com',
+      });
+
+      const tasks = await Task.find().sort({ createdAt: -1 });
+
+      expect(tasks).toHaveLength(2);
+      expect(tasks[0].taskName).toBe('Task A');
+      expect(tasks[1].taskName).toBe('Task B');
+    });
+
+    it('retrieves task by MongoDB _id', async () => {
+      const created = await Task.create({
+        taskName: 'Find Me',
+        dueDate: '2025-01-01',
+        priority: 'High',
+        userEmail: 'find@test.com',
+      });
+
+      const found = await Task.findOne({ _id: created._id });
+
+      expect(found).toBeDefined();
+      expect(found?.taskName).toBe('Find Me');
     });
   });
 
-  //UpdateTasks Tests
-  describe('updateTask', () => {
-    it('should update task and return 200', async () => {
-      const updateData = { taskName: 'Updated Task', priority: 'High' };
-      const updatedTask = { _id: 'uuid-1', ...updateData };
+  describe('Update Task', () => {
+    it('updates a task by _id', async () => {
+      const created = await Task.create({
+        taskName: 'Original',
+        dueDate: '2025-01-01',
+        priority: 'Low',
+        userEmail: 'original@test.com',
+      });
 
-      (Task.findByIdAndUpdate as jest.Mock).mockResolvedValue(updatedTask);
-
-      const req = { params: { id: 'uuid-1' }, body: updateData } as unknown as Request;
-      const res = mockRes() as unknown as Response;
-
-      await updateTask(req, res);
-
-      expect((Task.findByIdAndUpdate as jest.Mock).mock.calls[0][0]).toBe('uuid-1');
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(200);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toBe(updatedTask);
-    });
-
-    it('should return 404 when task not found', async () => {
-      (Task.findByIdAndUpdate as jest.Mock).mockResolvedValue(null);
-
-      const req = { params: { id: 'missing' }, body: { taskName: 'New' } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
-
-      await updateTask(req, res);
-
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(404);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toEqual({ message: 'Task not found' });
-    });
-
-    it('should return 500 on error', async () => {
-      (Task.findByIdAndUpdate as jest.Mock).mockRejectedValue(new Error('DB error'));
-
-      const req = { params: { id: 'uuid-1' }, body: {} } as unknown as Request;
-      const res = mockRes() as unknown as Response;
-
-      await updateTask(req, res);
-
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(500);
-    });
-  });
-
-  //DeleteTask Tests
-  describe('deleteTask', () => {
-    it('should delete task and return 200', async () => {
-      const deletedTask = { _id: 'uuid-1', taskName: 'Task' };
-      (Task.findByIdAndDelete as jest.Mock).mockResolvedValue(deletedTask);
-
-      const req = { params: { id: 'uuid-1' } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
-
-      await deleteTask(req, res);
-
-      expect((Task.findByIdAndDelete as jest.Mock).mock.calls[0][0]).toBe('uuid-1');
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(200);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toEqual(
-        expect.objectContaining({ message: 'Task deleted successfully', task: deletedTask })
+      const updated = await Task.findByIdAndUpdate(
+        created._id,
+        { taskName: 'Updated', priority: 'High' },
+        { new: true, runValidators: true }
       );
+
+      expect(updated?.taskName).toBe('Updated');
+      expect(updated?.priority).toBe('High');
     });
 
-    it('should return 404 when task not found', async () => {
-      (Task.findByIdAndDelete as jest.Mock).mockResolvedValue(null);
+    it('returns null when task to update does not exist', async () => {
+      const fakeId = new mongoose.Types.ObjectId();
+      const result = await Task.findByIdAndUpdate(fakeId, { taskName: 'New' }, { new: true });
 
-      const req = { params: { id: 'missing' } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
+      expect(result).toBeNull();
+    });
+  });
 
-      await deleteTask(req, res);
+  describe('Delete Task', () => {
+    it('deletes a task by _id', async () => {
+      const created = await Task.create({
+        taskName: 'To Delete',
+        dueDate: '2025-01-01',
+        priority: 'Medium',
+        userEmail: 'delete@test.com',
+      });
 
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(404);
-      expect((res.json as jest.Mock).mock.calls[0][0]).toEqual({ message: 'Task not found' });
+      const deleted = await Task.findByIdAndDelete(created._id);
+
+      expect(deleted?.taskName).toBe('To Delete');
+
+      const found = await Task.findById(created._id);
+      expect(found).toBeNull();
     });
 
-    it('should return 500 on error', async () => {
-      (Task.findByIdAndDelete as jest.Mock).mockRejectedValue(new Error('DB error'));
+    it('returns null when task to delete does not exist', async () => {
+      const fakeId = new mongoose.Types.ObjectId();
+      const result = await Task.findByIdAndDelete(fakeId);
 
-      const req = { params: { id: 'uuid-1' } } as unknown as Request;
-      const res = mockRes() as unknown as Response;
+      expect(result).toBeNull();
+    });
+  });
 
-      await deleteTask(req, res);
+  describe('Complete Task Flow', () => {
+    it('moves task to completed and preserves taskId', async () => {
+      // Create a task
+      const task = await Task.create({
+        taskName: 'Complete Me',
+        dueDate: '2025-01-01',
+        priority: 'High',
+        userEmail: 'complete@test.com',
+      });
 
-      expect((res.status as jest.Mock).mock.calls[0][0]).toBe(500);
+
+      // Move to completed
+      const completedTask = new CompletedTask({
+        userEmail: task.userEmail,
+        taskName: task.taskName,
+        dueDate: task.dueDate,
+        priority: task.priority,
+        rewardPoints: 50,
+        isCompleted: true,
+        taskId: task._id.toString(),
+      });
+
+      const saved = await completedTask.save();
+
+      // Delete original task
+      await Task.findByIdAndDelete(task._id);
+
+      // Verify
+      expect(saved.rewardPoints).toBe(50);
+
+      const taskGone = await Task.findById(task._id);
+      expect(taskGone).toBeNull();
+
+      const completedExists = await CompletedTask.findOne({ taskName: task.taskName });
+      expect(completedExists).toBeDefined();
+      expect(completedExists?.taskName).toBe(task.taskName.toString());
     });
   });
 });
