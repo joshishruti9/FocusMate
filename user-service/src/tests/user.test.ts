@@ -38,6 +38,9 @@ describe('User Service Integration Tests', () => {
       expect(saved.userEmail).toBe(userData.userEmail);
       expect(saved.firstName).toBe(userData.firstName);
       expect(saved.rewardPoints).toBe(0);
+      // check default notification preference
+      expect(saved.notificationPreference).toBeDefined();
+      expect(saved.notificationPreference?.email?.enabled).toBe(true);
     });
   });
 
@@ -137,6 +140,15 @@ describe('User Service Integration Tests', () => {
       expect(updated?.firstName).toBe('Francis');
       expect(updated?.password).toBe('newpass');
       expect(updated?.rewardPoints).toBe(50);
+
+      // update notification preference
+      const notifUpdated = await User.findByIdAndUpdate(
+        created._id,
+        { notificationPreference: { email: { enabled: false, scheduleCron: '*/30 * * * *' } } },
+        { new: true }
+      );
+      expect(notifUpdated?.notificationPreference?.email?.enabled).toBe(false);
+      expect(notifUpdated?.notificationPreference?.email?.scheduleCron).toBe('*/30 * * * *');
     });
 
     it('returns null when updating non-existent user', async () => {

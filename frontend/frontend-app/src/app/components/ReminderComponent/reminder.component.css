@@ -1,0 +1,180 @@
+.reminder-component {
+    margin: 20px 0;
+}
+
+.reminder-header {
+    margin-bottom: 1rem;
+}
+
+.card {
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.form-check-input:checked {
+    background-color: #667eea;
+    border-color: #667eea;
+}
+
+.form-switch .form-check-input {
+    width: 3em;
+    height: 1.5em;
+    cursor: pointer;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: #667eea;
+}
+
+.reminder-options {
+    animation: slideDown 0.3s ease-in-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.form-label i {
+    margin-right: 8px;
+}
+
+.form-control,
+.form-select {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    outline: none;
+}
+
+.day-selector {
+    margin-top: 10px;
+}
+
+.btn-outline-primary {
+    border-color: #667eea;
+    color: #667eea;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: #667eea;
+    border-color: #667eea;
+    color: white;
+}
+
+.btn-check:checked + .btn-outline-primary {
+    background-color: #667eea;
+    border-color: #667eea;
+    color: white;
+}
+
+.notification-channels {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.notification-channels .form-check {
+    padding-left: 2rem;
+}
+
+.notification-channels .form-check-label {
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.notification-channels .form-check-label i {
+    margin-right: 8px;
+    font-size: 1.1em;
+}
+
+.input-group .form-control,
+.input-group .form-select {
+    border: 2px solid #e0e0e0;
+}
+
+.input-group .form-control:focus,
+.input-group .form-select:focus {
+    border-color: #667eea;
+    z-index: 3;
+}
+
+.alert-light {
+    background-color: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+.alert-light h6 {
+    color: #667eea;
+    font-weight: 600;
+}
+
+.alert-light p {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.alert-light strong {
+    color: #333;
+}
+
+.text-danger {
+    font-size: 0.875rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .btn-group {
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        border-radius: 8px !important;
+        margin-bottom: 5px;
+    }
+    
+    .day-selector .btn-group {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 5px;
+    }
+}
+
+/* Icon Animations */
+.fa-bell,
+.fa-redo,
+.fa-clock,
+.fa-calendar-week,
+.fa-paper-plane {
+    transition: transform 0.3s ease;
+}
+
+.form-label:hover i {
+    transform: scale(1.1);
+}

@@ -118,6 +118,8 @@
                                   placeholder="Add more details about this quest..."></textarea>
                           </div>
 
+                          <app-reminder (reminderChange)="onReminderChange($event)"></app-reminder>
+
                           <div class="mb-4">
                               <label for="userEmail" class="form-label">
                                   <i class="fas fa-envelope text-primary"></i> Your Email <span class="text-danger">*</span>

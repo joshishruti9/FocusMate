@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { createTask, getAllTasks, getTaskbyId, getPendingTasks, updateTask, deleteTask, markTaskComplete} from "../controllers/task.controller";
+import { createTask, getAllTasks, getTaskbyId, getPendingTasks, updateTask, deleteTask, markTaskComplete, getTasksDueSoon } from "../controllers/task.controller";
 
 const router = Router();
 
 router.post("/", createTask);
 router.get("/", getAllTasks);
 router.get("/pending", getPendingTasks);
+router.get('/due-soon', getTasksDueSoon);
 router.get("/:id", getTaskbyId);
 
 // Update task

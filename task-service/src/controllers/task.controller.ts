@@ -6,7 +6,7 @@ import * as userClient from '../clients/userClient';
 
 export const createTask = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { taskName, dueDate, priority, category, userEmail, description, isCompleted } = req.body;
+    const { taskName, dueDate, priority, category, userEmail, description, isCompleted, reminder } = req.body;
 
     const task = new Task({
       taskName,
@@ -16,6 +16,10 @@ export const createTask = async (req: Request, res: Response): Promise<void> => 
       userEmail,
       description,
       isCompleted,
+      reminder: {
+        enabled: { type: Boolean, default: false },
+        remindAt: { type: String },
+      },
     });
 
     await task.save();
@@ -137,3 +141,47 @@ export const markTaskComplete = async (req: Request, res: Response): Promise<voi
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const getTasksDueSoon = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // +/- 240 minutes window
+    const minutes = 480;
+
+    const now = new Date();
+    const lower = new Date(now.getTime() - minutes * 60 * 1000);
+    const upper = new Date(now.getTime() + minutes * 60 * 1000);
+
+    console.log("NOW:", now.toISOString());
+    console.log("LOWER:", lower.toISOString());
+    console.log("UPPER:", upper.toISOString());
+
+    // Get all active tasks
+    const tasks = await Task.find({ isCompleted: false });
+
+    console.log("ALL ACTIVE TASKS:", tasks);
+
+    // Filter tasks whose reminder is within +/- 4 hours
+    const dueSoon = tasks.filter((t) => {
+      if (!t.reminder?.enabled || !t.reminder?.remindAt) return false;
+
+      const remindAt = new Date(t.reminder.remindAt);
+
+      console.log(
+        `remindAt: ${remindAt.toISOString()} | lower: ${lower.toISOString()} | upper: ${upper.toISOString()}`
+      );
+
+      return remindAt >= lower && remindAt <= upper;
+    });
+
+    console.log("---------------------------------------");
+    console.log("DUE SOON TASKS:", dueSoon);
+
+    res.status(200).json(dueSoon);
+  } catch (error) {
+    console.error("Error fetching tasks due soon:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+  

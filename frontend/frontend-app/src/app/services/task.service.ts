@@ -22,6 +22,10 @@ export interface CreateTask {
   category: string;
   description: string;
   userEmail: string;
+  reminder?: {
+    enabled?: boolean;
+    remindAt?: string;
+  };
 }
 
 

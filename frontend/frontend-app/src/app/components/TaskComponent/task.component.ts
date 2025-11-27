@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { TaskService } from '../../services/task.service';
 import { CommonModule } from '@angular/common';
+import { ReminderComponent, ReminderConfig } from '../ReminderComponent/reminder.component';
 
 @Component({
   selector: 'app-create-task',
   standalone: true, 
-  imports: [FormsModule, CommonModule], 
+  imports: [FormsModule, CommonModule, ReminderComponent], 
   providers: [TaskService],
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.css']
@@ -24,13 +25,36 @@ export class TaskComponent {
     this.minDate = today.toISOString().split('T')[0];
   }
 
+  reminderConfig: ReminderConfig | null = null;
+
+  onReminderChange(config: ReminderConfig): void {
+    this.reminderConfig = config;
+    console.log('Reminder configuration:', config);
+  }
+
   createTask() {
   try {
-      this.taskService.createTask(this.CreateTask ).subscribe({
+      const payload: any = { ...this.CreateTask };
+      if (this.reminderConfig?.enabled) {
+        try {
+          const datePart = this.CreateTask.dueDate || new Date().toISOString().split('T')[0];
+          const timePart = this.reminderConfig.time || '09:00';
+          const remindAt = new Date(`${datePart}T${timePart}:00`);
+          // apply advance notice
+          if (this.reminderConfig.advanceNotice && this.reminderConfig.advanceNotice > 0) {
+            remindAt.setMinutes(remindAt.getMinutes() - this.reminderConfig.advanceNotice);
+          }
+          payload.reminder = { enabled: true, remindAt: remindAt.toISOString() };
+        } catch (err) {
+          console.error('Invalid reminder config', err);
+        }
+      }
+      this.taskService.createTask(payload).subscribe({
         next: () => {
           console.log('API call successful.'); 
           this.successMessage = 'Success: New Quest Logged! Preparing for deployment.';
           this.CreateTask  = { taskName: '', dueDate: '', priority: '', category: '', description: '', userEmail: ''};
+          this.reminderConfig = null;
         },
         error: err => {
           console.error('API Error (Async):', err);

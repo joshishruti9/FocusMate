@@ -43,6 +43,21 @@ export const getUserbyId = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
+export const getUserByEmail = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email } = req.params;
+    const user = await User.findOne({ userEmail: email });
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+    res.status(200).json(user);
+  } catch (err) {
+    console.error('Error fetching user by email:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -62,6 +77,26 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
   } catch (error) {
     console.error("Error updating user:", error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const updateNotificationPreference = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { notificationPreference } = req.body;
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { $set: { notificationPreference } },
+      { new: true, runValidators: true }
+    );
+    if (!updatedUser) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    console.error('Error updating notification preference:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
