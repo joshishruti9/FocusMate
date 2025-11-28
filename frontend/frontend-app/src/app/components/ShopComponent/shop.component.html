@@ -2,6 +2,10 @@
 <div *ngIf="error" class="text-center text-danger">{{ error }}</div>
 
  <div class="container mt-4">
+  <div class="mb-3">
+    <h5 *ngIf="user?.userEmail">Welcome, {{ user.userEmail }} • Reward points: {{ rewardPoints }}</h5>
+    <h5 *ngIf="!user">Welcome! Sign in to see reward points.</h5>
+  </div>
 <div class="row">
   <div class="col-md-4 mb-4" *ngFor="let item of items">
     <div class="card h-100 shop-card">

@@ -9,6 +9,7 @@ import {
 	addReward,
 	getUserByEmail,
 	updateNotificationPreference,
+	googleLogin,
 } from "../controllers/user.controller";
 
 const router = Router();
@@ -31,5 +32,6 @@ router.post("/complete", completeTaskAndAddReward);
 
 router.post("/rewards", addReward);
 
+router.post('/auth/google', googleLogin);
 
 export default router;

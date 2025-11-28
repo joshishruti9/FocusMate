@@ -129,7 +129,9 @@
                                   class="form-control" 
                                   id="userEmail"
                                   name="userEmail"
-                                  [(ngModel)]="CreateTask .userEmail"
+                                  [(ngModel)]="CreateTask.userEmail"
+                                  [readonly]="true"
+                                  [disabled]="true"
                                   placeholder="your.email@example.com" 
                                   required
                                   email

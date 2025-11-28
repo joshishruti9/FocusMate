@@ -21,9 +21,18 @@
                     <li class="nav-item">
                         <a class="nav-link" routerLink="/viewTasks">Profile</a>
                     </li>
-                    <li class="nav-item">
-                      <a class="nav-link" routerLink="/shop">Shop</a>
+                    <li class="nav-item" *ngIf="user">
+                        <a class="nav-link" (click)="logout()">Logout</a>
                     </li>
+                    <li class="nav-item" *ngIf="!user">
+                        <a class="nav-link" routerLink="/login">Login</a>
+                    </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" routerLink="/shop">Shop</a>
+                                        </li>
+                                        <li class="nav-item" *ngIf="user?.picture">
+                                            <img [src]="user.picture" alt="Profile" class="rounded-circle ms-3" width="40" height="40">
+                                        </li>
                 </ul>
             </div>
         </div>

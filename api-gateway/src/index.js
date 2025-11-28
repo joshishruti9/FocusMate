@@ -15,6 +15,7 @@ app.use("/api/user", verifyJWT, async (req, res) => {
     method: req.method,
     url: `${process.env.USER_SERVICE_URL}${req.url}`,
     data: req.body,
+    headers: { ...req.headers },
   });
   res.json(response.data);
 });
@@ -24,6 +25,7 @@ app.use("/api/task", verifyJWT, async (req, res) => {
     method: req.method,
     url: `${process.env.TASK_SERVICE_URL}${req.url}`,
     data: req.body,
+    headers: { ...req.headers },
   });
   res.json(response.data);
 });
@@ -33,6 +35,7 @@ app.use("/api/reward", verifyJWT, async (req, res) => {
     method: req.method,
     url: `${process.env.REWARD_SERVICE_URL}${req.url}`,
     data: req.body,
+    headers: { ...req.headers },
   });
   res.json(response.data);
 });

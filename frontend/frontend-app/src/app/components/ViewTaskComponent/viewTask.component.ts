@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../NavbarComponent/navbar.component';
 import { FooterComponent } from '../FooterComponent/footer.component';
 import { TaskService } from '../../services/task.service';
+import { AuthService } from '../../services/auth.service';
 
 interface Task {
   _id: string;
@@ -31,6 +32,7 @@ interface Task {
 export class ViewTasksComponent implements OnInit {
   tasks: Task[] = [];
   filteredTasks: Task[] = [];
+  user: any = null;
   
   filterPriority: string = 'all';
   filterCategory: string = 'all';
@@ -39,7 +41,7 @@ export class ViewTasksComponent implements OnInit {
   isLoading: boolean = false;
   errorMessage: string = '';
 
-   constructor(private taskService: TaskService) {
+  constructor(private taskService: TaskService, private authService: AuthService) {
   }
 
   categoryIcons: { [key: string]: string } = {
@@ -55,6 +57,7 @@ export class ViewTasksComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.user = this.authService.getUser();
     this.loadTasks();
   }
 
@@ -62,7 +65,8 @@ export class ViewTasksComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.taskService.getTasks().subscribe({
+    const email = this.user?.userEmail;
+    this.taskService.getTasks(email).subscribe({
       next: (pendingTasks) => {
         console.log('Retrieved tasks:', pendingTasks);
         this.tasks = pendingTasks;

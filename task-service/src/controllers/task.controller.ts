@@ -17,8 +17,8 @@ export const createTask = async (req: Request, res: Response): Promise<void> => 
       description,
       isCompleted,
       reminder: {
-        enabled: { type: Boolean, default: false },
-        remindAt: { type: String },
+          enabled: req.body.reminder?.enabled ?? false,
+          remindAt: req.body.reminder?.remindAt ?? null
       },
     });
 
@@ -32,7 +32,13 @@ export const createTask = async (req: Request, res: Response): Promise<void> => 
 
 export const getAllTasks = async (req: Request, res: Response): Promise<void> => {
   try {
-    const tasks = await Task.find().sort({ createdAt: -1 });
+    // Allow filtering by userEmail query param
+    const { userEmail } = req.query;
+    const filter: any = {};
+    if (userEmail) {
+      filter.userEmail = String(userEmail);
+    }
+    const tasks = await Task.find(filter).sort({ createdAt: -1 });
     res.status(200).json(tasks);
   } catch (error) {
     res.status(500).json({ message: "Server error" });

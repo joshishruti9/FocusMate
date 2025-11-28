@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
 import { Observable, of } from 'rxjs';
 
 interface Item {
@@ -21,8 +23,10 @@ export class ShopComponent implements OnInit {
   items: Item[] = [];
   loading = true;
   error: string | null = null;
+  user: any = null;
+  rewardPoints: number = 0;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService, private userService: UserService) {}
 
   ngOnInit() {
     this.fetchItems();
@@ -49,6 +53,14 @@ export class ShopComponent implements OnInit {
     //     next: data => { this.items = data; this.loading = false; },
     //     error: err => { this.error = 'Failed to load items'; this.loading = false; }
     //   });
+    // Load user reward points if logged in
+    const user = this.authService.getUser();
+    if (user?.userEmail) {
+      this.userService.getUserByEmail(user.userEmail).subscribe({
+        next: (u) => { this.user = u; this.rewardPoints = u.rewardPoints || 0; },
+        error: () => { this.rewardPoints = 0; }
+      });
+    }
   }
 
   purchaseItem(itemId: string) {

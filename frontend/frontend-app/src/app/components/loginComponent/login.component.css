@@ -1,0 +1,78 @@
+/* Full-page gradient background with centered content */
+.login-container {
+  display: flex;
+  justify-content: center;      /* centers the card horizontally */
+  align-items: center;          /* centers the card vertically */
+  height: 100vh;
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Larger white login card */
+.login-card {
+  background: white;
+  border-radius: 20px;
+  padding: 80px 100px;          /* increased padding for larger feel */
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 600px;                 /* increased width */
+  height: 450px;                /* increased height */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 45px rgba(0, 0, 0, 0.3);
+}
+
+/* Enlarged title and subtitle */
+.login-card h1 {
+  font-size: 2.8rem;            /* larger title */
+  margin-bottom: 15px;
+  color: #0072ff;
+  font-weight: 700;
+}
+
+.login-card p {
+  color: #333;
+  font-size: 1.25rem;           /* larger subtitle text */
+  margin-bottom: 35px;
+}
+
+.google-btn {
+  background: white;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  padding: 16px 30px;           /* larger button padding */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s ease;
+  width: 320px;                 /* larger width */
+  margin: 0 auto;               /* centered inside card */
+}
+
+.google-btn:hover {
+  background-color: #f1f1f1;
+  border-color: #0072ff;
+}
+
+.google-btn img {
+  width: 28px;
+  height: 28px;
+}
+
+/* Footer note */
+.disclaimer {
+  margin-top: 40px;
+  font-size: 15px;
+  color: gray;
+}

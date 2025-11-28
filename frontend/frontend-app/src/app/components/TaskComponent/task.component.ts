@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { TaskService } from '../../services/task.service';
+import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { ReminderComponent, ReminderConfig } from '../ReminderComponent/reminder.component';
 
@@ -20,9 +21,13 @@ export class TaskComponent {
   description: string = '';
   userEmail: string = '';
 
-  constructor(private taskService: TaskService) {
+  constructor(private taskService: TaskService, private authService: AuthService) {
     const today = new Date();
     this.minDate = today.toISOString().split('T')[0];
+    const currentUser = this.authService.getUser();
+    if (currentUser && currentUser.userEmail) {
+      this.CreateTask.userEmail = currentUser.userEmail;
+    }
   }
 
   reminderConfig: ReminderConfig | null = null;
@@ -72,7 +77,9 @@ export class TaskComponent {
 }
 
   viewTasks() {
-    this.taskService.getTasks().subscribe(tasks => {
+    const currentUser = this.authService.getUser();
+    const email = currentUser?.userEmail;
+    this.taskService.getTasks(email).subscribe(tasks => {
       console.log('Retrieved tasks:', tasks);
     });
   }
