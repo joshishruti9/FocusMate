@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NavbarComponent } from '../NavbarComponent/navbar.component';
-import { FooterComponent } from '../FooterComponent/footer.component';
+import { RouterLink } from '@angular/router';
 import { TaskService } from '../../services/task.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -22,7 +21,7 @@ interface Task {
 @Component({
   selector: 'app-view-tasks',
   standalone: true,
-  imports: [FormsModule, CommonModule], 
+  imports: [FormsModule, CommonModule, RouterLink], 
    providers: [TaskService],
   templateUrl: './viewTask.component.html',
   styleUrls: ['./viewTask.component.css']

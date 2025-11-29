@@ -18,7 +18,7 @@
                       <p class="mb-0 mt-2">Add a task and start earning XP!</p>
                   </div>
                   <div class="card-body p-4">
-                      <form (ngSubmit)="createTask()" #taskForm="ngForm">
+                      <form (ngSubmit)="createTask(taskForm)" #taskForm="ngForm">
                           
                           <div class="mb-4">
                               <label for="taskName" class="form-label">

@@ -27,6 +27,7 @@ export class TaskComponent {
     const currentUser = this.authService.getUser();
     if (currentUser && currentUser.userEmail) {
       this.CreateTask.userEmail = currentUser.userEmail;
+      this.userEmail = currentUser.userEmail;
     }
   }
 
@@ -37,7 +38,7 @@ export class TaskComponent {
     console.log('Reminder configuration:', config);
   }
 
-  createTask() {
+  createTask(form?: NgForm) {
   try {
       const payload: any = { ...this.CreateTask };
       if (this.reminderConfig?.enabled) {
@@ -58,7 +59,12 @@ export class TaskComponent {
         next: () => {
           console.log('API call successful.'); 
           this.successMessage = 'Success: New Quest Logged! Preparing for deployment.';
-          this.CreateTask  = { taskName: '', dueDate: '', priority: '', category: '', description: '', userEmail: ''};
+          // Reset model, keep the user's email pre-filled
+          this.CreateTask  = { taskName: '', dueDate: '', priority: '', category: '', description: '', userEmail: this.userEmail };
+          // Reset form state to prevent showing validation errors after successful submission
+          if (form) {
+            form.resetForm({ userEmail: this.userEmail });
+          }
           this.reminderConfig = null;
         },
         error: err => {
