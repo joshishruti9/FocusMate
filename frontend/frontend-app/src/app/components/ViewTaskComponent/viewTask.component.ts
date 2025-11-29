@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TaskService } from '../../services/task.service';
 import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 interface Task {
   _id: string;
@@ -40,7 +41,7 @@ export class ViewTasksComponent implements OnInit {
   isLoading: boolean = false;
   errorMessage: string = '';
 
-  constructor(private taskService: TaskService, private authService: AuthService) {
+  constructor(private taskService: TaskService, private authService: AuthService, private router: Router) {
   }
 
   categoryIcons: { [key: string]: string } = {
@@ -143,15 +144,8 @@ export class ViewTasksComponent implements OnInit {
   }
   
   editTask(id: string, task: Task): void {
-    console.log('Edit task:', task);
-    this.taskService.editTask(task, '').subscribe({
-      next: (updatedTask) => {
-        console.log('Task updated successfully:', updatedTask);
-      },
-      error: (error) => {
-        console.error('Error updating task:', error);
-      }
-    });
+    // Navigate to the CreateTask component with query param to enable edit mode
+    this.router.navigate(['/task'], { queryParams: { editId: id } });
   }
 
   deleteTask(taskId: string): void {

@@ -57,8 +57,8 @@ export class TaskService {
   }
 
   editTask(task: Task, id: string) : Observable<Task>{
-    const email = task.userEmail;
-    return this.http.put<Task>(`${this.apiUrl}/${id}`, email, this.getAuthHeaders());
+    // Send the task object as the request body to update
+    return this.http.put<Task>(`${this.apiUrl}/${encodeURIComponent(id)}`, task, this.getAuthHeaders());
   }
   completeTask(task: Task, id: string) : Observable<Task>{
     return this.http.post<Task>(`${this.apiUrl}/complete/${id}`, task, this.getAuthHeaders());
