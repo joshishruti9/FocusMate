@@ -44,6 +44,9 @@ it('should create user on first google login and return tasks', async () => {
     if ((url as string).includes('/api/tasks')) {
       return Promise.resolve({ status: 200, data: [{ taskName: 'Task A', userEmail: 'googleuser@example.com' }] });
     }
+    if ((url as string).includes('/api/tasks/completed/summary')) {
+      return Promise.resolve({ status: 200, data: { totalEarned: 70 } });
+    }
     return Promise.resolve({ status: 200, data: {} });
   });
 
@@ -62,6 +65,7 @@ it('should create user on first google login and return tasks', async () => {
   expect(jsonResult).toBeDefined();
   expect(jsonResult.code).toBe(200);
   expect(jsonResult.data.user.userEmail).toBe('googleuser@example.com');
+  expect(jsonResult.data.user.rewardPoints).toBe(70);
   expect(Array.isArray(jsonResult.data.tasks)).toBe(true);
   expect(jsonResult.data.tasks[0].taskName).toBe('Task A');
 });

@@ -3,7 +3,7 @@
 
  <div class="container mt-4">
   <div class="mb-3">
-    <h5 *ngIf="user?.userEmail">Welcome, {{ user.userEmail }} • Reward points: {{ rewardPoints }}</h5>
+    <h5 *ngIf="user?.userEmail">Welcome, {{ user.userEmail }} • Reward points: {{ user.rewardPoints }}</h5>
     <h5 *ngIf="!user">Welcome! Sign in to see reward points.</h5>
   </div>
 <div class="row">
@@ -17,7 +17,7 @@
       <div class="card-body text-center">
         <h5 class="card-title">{{ item.name }}</h5>
         <p class="card-text">Price: {{ item.price }} coins</p>
-        <button class="btn btn-primary" (click)="purchaseItem(item._id)">
+        <button class="btn btn-primary" (click)="purchaseItem(item._id)" [disabled]="!user || user.rewardPoints <= item.price">
           Purchase
         </button>
       </div>

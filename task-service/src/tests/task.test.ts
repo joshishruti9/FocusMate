@@ -3,6 +3,10 @@ import mongoose from 'mongoose';
 import Task from '../models/task.model';
 import CompletedTask from '../models/completedTask.model';
 import * as TaskController from '../controllers/task.controller';
+import jwt from 'jsonwebtoken';
+import * as userClient from '../clients/userClient';
+
+jest.mock('../clients/userClient');
 
 const MONGODB_URI = 'mongodb://localhost:27017/focusmatetest';
 
@@ -168,7 +172,8 @@ describe('Task Service Integration Tests', () => {
         reminder: { enabled: true, remindAt: remindAt.toISOString() }
       } as any);
 
-      const req = { query: { minutes: '30' } } as any;
+        const token = jwt.sign({ userEmail: 'remindsoontest@test.com' }, process.env.JWT_SECRET || 'default_secret');
+        const req = { query: { minutes: '30' }, headers: { authorization: `Bearer ${token}` } } as any;
       let result: any = null;
       const res = {
         status: (code: number) => ({ json: (data: any) => { result = data; } }),
@@ -272,6 +277,36 @@ describe('Task Service Integration Tests', () => {
       const completedExists = await CompletedTask.findOne({ taskName: task.taskName });
       expect(completedExists).toBeDefined();
       expect(completedExists?.taskName).toBe(task.taskName.toString());
+    });
+
+    it('controller markTaskComplete calls userClient.addReward and moves task', async () => {
+      const task = await Task.create({
+        taskName: 'Controller Complete',
+        dueDate: '2025-01-01',
+        priority: 'High',
+        userEmail: 'controller@test.com',
+      });
+
+      const req = { params: { id: task._id.toString() }, body: { userEmail: task.userEmail } } as any;
+      let statusCode = 0;
+      let responseJson: any = null;
+      const res = {
+        status: (code: number) => { statusCode = code; return { json: (data: any) => { responseJson = data; } }; }
+      } as any;
+
+      // userClient.addReward is mocked, ensure it resolves
+      (userClient.addReward as jest.Mock).mockResolvedValue(undefined);
+
+      await TaskController.markTaskComplete(req, res);
+
+      expect(statusCode).toBe(200);
+      expect((userClient.addReward as jest.Mock).mock.calls.length).toBeGreaterThanOrEqual(1);
+
+      const foundTask = await Task.findById(task._id);
+      expect(foundTask).toBeNull();
+      const completed = await CompletedTask.findOne({ taskName: 'Controller Complete' });
+      expect(completed).toBeDefined();
+      expect(completed?.rewardPoints).toBeGreaterThan(0);
     });
   });
 });

@@ -25,6 +25,7 @@
     "passport": "^0.7.0"
   },
   "devDependencies": {
+    "supertest": "^6.4.2",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/jest": "^29.5.4",

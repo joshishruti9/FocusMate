@@ -39,7 +39,6 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 
 export const getUserbyId = async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log("Fetching user by ID:", req.params);
     const { id } = req.params;
     const users = await User.findById(id).sort({ createdAt: -1 });
     res.json(users);
@@ -204,10 +203,19 @@ export const googleLogin = async (req: Request, res: Response): Promise<void> =>
       await user.save();
     }
 
-    // Fetch user's tasks from task-service
+    // Fetch user's tasks from task-service (active tasks)
     const taskServiceUrl = process.env.TASK_SERVICE_URL || 'http://localhost:5000';
     const tasksResp = await axios.get(`${taskServiceUrl}/api/tasks?userEmail=${encodeURIComponent(email)}`).catch(err => null);
     const tasks = tasksResp && tasksResp.data ? tasksResp.data : [];
+    // Fetch total earned from completed tasks and sync to user's rewardPoints if not set
+    const summaryResp = await axios.get(`${taskServiceUrl}/api/tasks/completed/summary?userEmail=${encodeURIComponent(email)}`).catch(err => null);
+    const totalEarned = summaryResp && summaryResp.data ? summaryResp.data.totalEarned : 0;
+    // When creating new users, or if the user currently has 0 rewardPoints, set rewardPoints to totalEarned
+    if (!user.rewardPoints || user.rewardPoints === 0) {
+      user.rewardPoints = totalEarned;
+      await user.save();
+    }
+
     // Issue a JWT for the user
     const token = jwt.sign({ userEmail: user.userEmail, id: user._id }, process.env.JWT_SECRET || 'default_secret', { expiresIn: '1h' });
 
@@ -218,5 +226,38 @@ export const googleLogin = async (req: Request, res: Response): Promise<void> =>
     console.error('Google login failed:', err);
     res.redirect('http://localhost:4200/login');
     return;
+  }
+};
+
+export const purchaseItemForUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params; // user id
+    const { itemId, price, name, imageUrl } = req.body;
+
+    const user = await User.findById(id);
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    if (typeof price !== 'number' || price < 0) {
+      res.status(400).json({ message: 'Invalid price' });
+      return;
+    }
+
+    if ((user.rewardPoints || 0) < price) {
+      res.status(400).json({ message: 'Insufficient reward points' });
+      return;
+    }
+
+    user.rewardPoints = (user.rewardPoints || 0) - price;
+    user.purchasedItems = user.purchasedItems || [];
+    user.purchasedItems.push({ itemId, name, price, imageUrl, purchasedAt: new Date() } as any);
+    await user.save();
+
+    res.status(200).json({ message: 'Purchase recorded', user });
+  } catch (err) {
+    console.error('Error in purchaseItemForUser:', err);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };

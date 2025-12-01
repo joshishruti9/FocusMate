@@ -15,6 +15,18 @@ export interface Task {
   __v?: number;
 }
 
+export interface CompletedTask {
+  _id: string;
+  userEmail: string;
+  taskName: string;
+  description?: string;
+  dueDate: string;
+  category: string;
+  priority: string;
+  rewardPoints?: number;
+  completedAt?: string;
+}
+
 export interface CreateTask {
   taskName: string;
   dueDate: string;
@@ -54,6 +66,16 @@ export class TaskService {
 
   getPendingTasks(): Observable<Task[]> {
     return this.http.get<Task[]>(`${this.apiUrl}/pending`);
+  }
+
+  getCompletedTasks(email?: string): Observable<CompletedTask[]> {
+    const url = email ? `${this.apiUrl}/completed?userEmail=${encodeURIComponent(email)}` : `${this.apiUrl}/completed`;
+    return this.http.get<CompletedTask[]>(url, this.getAuthHeaders());
+  }
+
+  getCompletedSummary(email?: string): Observable<{ totalEarned: number }> {
+    const url = email ? `${this.apiUrl}/completed/summary?userEmail=${encodeURIComponent(email)}` : `${this.apiUrl}/completed/summary`;
+    return this.http.get<{ totalEarned: number }>(url, this.getAuthHeaders());
   }
 
   editTask(task: Task, id: string) : Observable<Task>{

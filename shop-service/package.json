@@ -7,6 +7,10 @@
     "mongoose": "^8.19.2"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
+    "ts-jest": "^29.4.5",
+    "@types/jest": "^29.5.14",
+    "mongodb-memory-server": "^9.1.0",
     "@types/axios": "^0.9.36",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.4",
@@ -17,5 +21,7 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts"
+    ,
+    "populate": "ts-node src/populateItems.ts"
   }
 }

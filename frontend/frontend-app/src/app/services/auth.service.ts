@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -15,6 +15,7 @@ export class AuthService {
   setUser(user: any, token?: string) {
     const authData = { user, token };
     localStorage.setItem('currentUser', JSON.stringify(authData));
+    this.userSubject.next(user);
   }
 
   getUser() {
@@ -25,6 +26,7 @@ export class AuthService {
 
   clearUser() {
     localStorage.removeItem('currentUser');
+    this.userSubject.next(null);
   }
 
   getToken(): string | null {
@@ -32,4 +34,8 @@ export class AuthService {
     const parsed = raw ? JSON.parse(raw) : null;
     return parsed?.token || null;
   }
+
+  // Observable of current user for components to react to login/logout
+  private userSubject = new BehaviorSubject<any>(this.getUser());
+  public currentUser$ = this.userSubject.asObservable();
 }

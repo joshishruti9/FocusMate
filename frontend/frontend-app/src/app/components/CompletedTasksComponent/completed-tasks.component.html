@@ -1,0 +1,21 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Completed Quests</h2>
+      <p>Total earned: <strong>{{ totalEarned }}</strong></p>
+      <a class="btn btn-sm btn-outline-primary mb-2" routerLink="/shop">Go to Shop</a>
+      <div *ngIf="isLoading">Loading...</div>
+      <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+      <div *ngIf="tasks.length === 0">
+        <p>No completed quests yet. Keep completing quests to earn XP!</p>
+      </div>
+      <div *ngFor="let t of tasks" class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">{{ t.taskName }} <small class="text-muted">(+{{ t.rewardPoints }} XP)</small></h5>
+          <p class="card-text">{{ t.description }}</p>
+          <p class="card-text"><small class="text-muted">Completed on {{ t.completedAt | date }}</small></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

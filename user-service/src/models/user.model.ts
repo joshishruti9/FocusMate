@@ -7,6 +7,13 @@ const userSchema = new mongoose.Schema({
   password: {type: String, required: true},
   rewardPoints: {type: Number, default: 0},
   picture: { type: String, default: '' },
+  purchasedItems: [{
+    itemId: { type: String },
+    name: { type: String },
+    price: { type: Number },
+    imageUrl: { type: String },
+    purchasedAt: { type: Date, default: Date.now }
+  }],
   notificationPreference: {
     email: {
       enabled: { type: Boolean, default: true },

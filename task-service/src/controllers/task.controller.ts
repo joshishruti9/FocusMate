@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import jwt from 'jsonwebtoken';
 import Task from "../models/task.model";
 import CompletedTask from "../models/completedTask.model";
 import * as taskService from '../services/taskService';
@@ -186,6 +187,75 @@ export const getTasksDueSoon = async (req: Request, res: Response): Promise<void
   } catch (error) {
     console.error("Error fetching tasks due soon:", error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getCompletedTasks = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // If authorization header present, verify token and restrict to token userEmail
+    const authHeader = req.headers.authorization || '';
+    let tokenEmail: string | null = null;
+    if (authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7);
+      try {
+        const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'default_secret');
+        tokenEmail = decoded?.userEmail || null;
+      } catch (e) {
+        // Invalid token - ignore and fallback to query param if present
+      }
+    }
+    const { userEmail } = req.query;
+    const filter: any = {};
+    // If tokenEmail exists, restrict to that user
+    if (tokenEmail) filter.userEmail = String(tokenEmail);
+    else if (userEmail) filter.userEmail = String(userEmail);
+    else {
+      res.status(401).json({ message: 'Authentication required' });
+      return;
+    }
+    const tasks = await CompletedTask.find(filter).sort({ completedAt: -1 });
+    res.status(200).json(tasks);
+  } catch (error) {
+    console.error('Error fetching completed tasks:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+  
+};
+
+export const getCompletedSummary = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const authHeader = req.headers.authorization || '';
+    let tokenEmail: string | null = null;
+    if (authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7);
+      try {
+        const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'default_secret');
+        tokenEmail = decoded?.userEmail || null;
+      } catch (e) {
+        // invalid token
+      }
+    }
+    const { userEmail } = req.query;
+    if (!tokenEmail && !userEmail) {
+      res.status(401).json({ message: 'Authentication required' });
+      return;
+    }
+    if (userEmail && tokenEmail && String(userEmail) !== String(tokenEmail)) {
+      res.status(403).json({ message: 'Forbidden' });
+      return;
+    }
+    const filterEmail = tokenEmail || String(userEmail);
+    const filter: any = {};
+    if (filterEmail) filter.userEmail = filterEmail;
+    const results = await CompletedTask.aggregate([
+      { $match: filter },
+      { $group: { _id: null, totalEarned: { $sum: { $ifNull: ["$rewardPoints", 0] } } } },
+    ]);
+    const totalEarned = results && results[0] ? results[0].totalEarned : 0;
+    res.status(200).json({ totalEarned });
+  } catch (err) {
+    console.error('Error computing completed tasks summary', err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
