@@ -27,7 +27,7 @@ export class ShopService {
     return this.http.get<Item[]>(`${this.apiUrl}`);
 }
 
-  purchaseItem(userEmail: string, itemId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/purchase`, { userEmail, itemId }, this.getAuthHeaders());
+  purchaseItem(userId: string, itemId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/purchase`, { userId, itemId }, this.getAuthHeaders());
   }
 }
