@@ -22,6 +22,7 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts",
+    "populate": "ts-node src/populateItems.ts",
     "test": "jest",
   "test:watch": "jest --watch"
   }
