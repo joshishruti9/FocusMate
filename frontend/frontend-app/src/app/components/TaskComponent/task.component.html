@@ -14,11 +14,11 @@
             <div class="col-lg-8 col-md-10">
               <div class="card shadow-lg border-0">
                   <div class="card-header bg-primary text-white text-center py-4">
-                      <h2 class="mb-0"><i class="fas fa-plus-circle"></i> Create New Quest</h2>
-                      <p class="mb-0 mt-2">Add a task and start earning XP!</p>
+                      <h2 class="mb-0"><i class="fas fa-plus-circle"></i> {{ editMode ? 'Edit Quest' : 'Create New Quest' }}</h2>
+                      <p class="mb-0 mt-2">{{ editMode ? 'Modify your quest details' : 'Add a task and start earning XP!' }}</p>
                   </div>
                   <div class="card-body p-4">
-                      <form (ngSubmit)="createTask()" #taskForm="ngForm">
+                      <form (ngSubmit)="createTask(taskForm)" #taskForm="ngForm">
                           
                           <div class="mb-4">
                               <label for="taskName" class="form-label">
@@ -118,6 +118,8 @@
                                   placeholder="Add more details about this quest..."></textarea>
                           </div>
 
+                          <app-reminder (reminderChange)="onReminderChange($event)"></app-reminder>
+
                           <div class="mb-4">
                               <label for="userEmail" class="form-label">
                                   <i class="fas fa-envelope text-primary"></i> Your Email <span class="text-danger">*</span>
@@ -127,7 +129,9 @@
                                   class="form-control" 
                                   id="userEmail"
                                   name="userEmail"
-                                  [(ngModel)]="CreateTask .userEmail"
+                                  [(ngModel)]="CreateTask.userEmail"
+                                  [readonly]="true"
+                                  [disabled]="true"
                                   placeholder="your.email@example.com" 
                                   required
                                   email
@@ -150,7 +154,7 @@
                                   type="submit" 
                                   class="btn btn-primary btn-lg"
                                   [disabled]="!taskForm.form.valid">
-                                  <i class="fas fa-plus"></i> Add Quest
+                                  <i class="fas fa-plus"></i> {{ editMode ? 'Update Quest' : 'Add Quest' }}
                               </button>
                           </div>
                       </form>

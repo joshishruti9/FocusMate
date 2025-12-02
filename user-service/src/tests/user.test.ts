@@ -239,3 +239,28 @@ describe('User Service Integration Tests', () => {
     });
   });
 });
+describe('User Service API', () => {
+  it('addReward increments rewardPoints correctly', async () => {
+    const u = new User({ userEmail: 'test@example.com', firstName: 'Test', lastName: 'User', password: 'pwd',  rewardPoints: 50,});
+    await u.save();
+
+    const found = await User.findOne({ userEmail: 'test@example.com' });
+    expect(found?.rewardPoints).toBe(25);
+  });
+
+  it('purchaseItemForUser deducts rewardPoints and appends to purchasedItems', async () => {
+    const u = new User({ userEmail: 'buy@example.com', firstName: 'Buyer', lastName: 'User', password: 'pwd', rewardPoints: 150 });
+    const saved = await u.save();
+
+    const res = await request(app)
+      .post(`/api/users/${saved._id}/purchase`)
+      .send({ itemId: 'abc123', price: 100, name: 'Sword', imageUrl: 'http://example.com/sword.png' });
+
+    expect(res.status).toBe(200);
+    const updated = await User.findById(saved._id);
+    expect(updated?.rewardPoints).toBe(50);
+    expect(updated?.purchasedItems?.length).toBe(1);
+    expect(updated?.purchasedItems?.[0].itemId).toBe('abc123');
+  });
+});
+

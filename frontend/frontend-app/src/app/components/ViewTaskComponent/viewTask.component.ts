@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NavbarComponent } from '../NavbarComponent/navbar.component';
-import { FooterComponent } from '../FooterComponent/footer.component';
+import { RouterLink } from '@angular/router';
 import { TaskService } from '../../services/task.service';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 interface Task {
   _id: string;
@@ -21,7 +22,7 @@ interface Task {
 @Component({
   selector: 'app-view-tasks',
   standalone: true,
-  imports: [FormsModule, CommonModule], 
+  imports: [FormsModule, CommonModule, RouterLink], 
    providers: [TaskService],
   templateUrl: './viewTask.component.html',
   styleUrls: ['./viewTask.component.css']
@@ -31,6 +32,7 @@ interface Task {
 export class ViewTasksComponent implements OnInit {
   tasks: Task[] = [];
   filteredTasks: Task[] = [];
+  user: any = null;
   
   filterPriority: string = 'all';
   filterCategory: string = 'all';
@@ -39,7 +41,7 @@ export class ViewTasksComponent implements OnInit {
   isLoading: boolean = false;
   errorMessage: string = '';
 
-   constructor(private taskService: TaskService) {
+  constructor(private taskService: TaskService, private authService: AuthService, private router: Router) {
   }
 
   categoryIcons: { [key: string]: string } = {
@@ -55,6 +57,7 @@ export class ViewTasksComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.user = this.authService.getUser();
     this.loadTasks();
   }
 
@@ -62,7 +65,8 @@ export class ViewTasksComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.taskService.getTasks().subscribe({
+    const email = this.user?.userEmail;
+    this.taskService.getTasks(email).subscribe({
       next: (pendingTasks) => {
         console.log('Retrieved tasks:', pendingTasks);
         this.tasks = pendingTasks;
@@ -140,15 +144,8 @@ export class ViewTasksComponent implements OnInit {
   }
   
   editTask(id: string, task: Task): void {
-    console.log('Edit task:', task);
-    this.taskService.editTask(task, '').subscribe({
-      next: (updatedTask) => {
-        console.log('Task updated successfully:', updatedTask);
-      },
-      error: (error) => {
-        console.error('Error updating task:', error);
-      }
-    });
+    // Navigate to the CreateTask component with query param to enable edit mode
+    this.router.navigate(['/task'], { queryParams: { editId: id } });
   }
 
   deleteTask(taskId: string): void {

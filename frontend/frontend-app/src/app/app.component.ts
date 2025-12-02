@@ -13,7 +13,9 @@ import { RouterOutlet } from '@angular/router';
   ],
   template: `
     <app-navbar></app-navbar>
+    <div class="content-wrapper">
       <router-outlet></router-outlet>
+    </div>
     <app-footer></app-footer>
   `,
   styleUrls: ['./app.component.css']

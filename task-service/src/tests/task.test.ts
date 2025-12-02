@@ -2,6 +2,11 @@
 import mongoose from 'mongoose';
 import Task from '../models/task.model';
 import CompletedTask from '../models/completedTask.model';
+import * as TaskController from '../controllers/task.controller';
+import jwt from 'jsonwebtoken';
+import * as userClient from '../clients/userClient';
+
+jest.mock('../clients/userClient');
 
 const MONGODB_URI = 'mongodb://localhost:27017/focusmatetest';
 
@@ -40,6 +45,27 @@ describe('Task Service Integration Tests', () => {
       expect(saved.taskName).toBe(taskData.taskName);
       expect(saved.priority).toBe(taskData.priority);
       expect(saved.userEmail).toBe(taskData.userEmail);
+    });
+
+    it('creates a task with reminder settings', async () => {
+      const taskData = {
+        taskName: 'Reminder Test',
+        dueDate: '2025-12-26',
+        priority: 'Low',
+        userEmail: 'remind@test.com',
+        reminder: {
+          enabled: true,
+          remindAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+        }
+      } as any;
+
+      const task = new Task(taskData);
+      const saved = await task.save();
+
+      expect(saved._id).toBeDefined();
+      expect(saved.reminder).toBeDefined();
+      expect(saved.reminder?.enabled).toBe(true);
+      expect(saved.reminder?.remindAt).toBeDefined();
     });
 
     it('generates unique taskIds for different tasks', async () => {
@@ -101,6 +127,65 @@ describe('Task Service Integration Tests', () => {
 
       expect(found).toBeDefined();
       expect(found?.taskName).toBe('Find Me');
+    });
+
+    it('retrieves tasks due soon via controller', async () => {
+      const now = new Date();
+      const soon = new Date(now.getTime() + 10 * 60 * 1000); // 10 minutes
+
+      const today = new Date();
+      const dueDate = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
+      await Task.create({
+        taskName: 'Due Soon',
+        dueDate,
+        priority: 'Low',
+        userEmail: 'due@test.com',
+        reminder: { enabled: true, remindAt: soon.toISOString() }
+      } as any);
+
+      const req = { query: { minutes: '30' } } as any;
+
+      let result: any = null;
+      const res = {
+        status: (code: number) => ({ json: (data: any) => { result = data; } }),
+      } as any;
+
+      await TaskController.getTasksDueSoon(req, res);
+
+      expect(result).toBeDefined();
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBeGreaterThanOrEqual(1);
+      expect(result[0].taskName).toBe('Due Soon');
+    });
+
+    it('retrieves tasks with reminder.remindAt within window via controller', async () => {
+      const now = new Date();
+      const remindAt = new Date(now.getTime() + 10 * 60 * 1000); // 10 minutes
+
+      const today = new Date();
+      const dueDate = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
+      await Task.create({
+        taskName: 'Remind Soon',
+        dueDate, // due today so it matches the new combined condition
+        priority: 'Low',
+        userEmail: 'remindsoontest@test.com',
+        reminder: { enabled: true, remindAt: remindAt.toISOString() }
+      } as any);
+
+        const token = jwt.sign({ userEmail: 'remindsoontest@test.com' }, process.env.JWT_SECRET || 'default_secret');
+        const req = { query: { minutes: '30' }, headers: { authorization: `Bearer ${token}` } } as any;
+      let result: any = null;
+      const res = {
+        status: (code: number) => ({ json: (data: any) => { result = data; } }),
+      } as any;
+
+      await TaskController.getTasksDueSoon(req, res);
+
+      expect(result).toBeDefined();
+      expect(Array.isArray(result)).toBe(true);
+      const found = result.find((t: any) => t.taskName === 'Remind Soon');
+      expect(found).toBeDefined();
+      expect(found.reminder?.enabled).toBe(true);
     });
   });
 
@@ -192,6 +277,36 @@ describe('Task Service Integration Tests', () => {
       const completedExists = await CompletedTask.findOne({ taskName: task.taskName });
       expect(completedExists).toBeDefined();
       expect(completedExists?.taskName).toBe(task.taskName.toString());
+    });
+
+    it('controller markTaskComplete calls userClient.addReward and moves task', async () => {
+      const task = await Task.create({
+        taskName: 'Controller Complete',
+        dueDate: '2025-01-01',
+        priority: 'High',
+        userEmail: 'controller@test.com',
+      });
+
+      const req = { params: { id: task._id.toString() }, body: { userEmail: task.userEmail } } as any;
+      let statusCode = 0;
+      let responseJson: any = null;
+      const res = {
+        status: (code: number) => { statusCode = code; return { json: (data: any) => { responseJson = data; } }; }
+      } as any;
+
+      // userClient.addReward is mocked, ensure it resolves
+      (userClient.addReward as jest.Mock).mockResolvedValue(undefined);
+
+      await TaskController.markTaskComplete(req, res);
+
+      expect(statusCode).toBe(200);
+      expect((userClient.addReward as jest.Mock).mock.calls.length).toBeGreaterThanOrEqual(1);
+
+      const foundTask = await Task.findById(task._id);
+      expect(foundTask).toBeNull();
+      const completed = await CompletedTask.findOne({ taskName: 'Controller Complete' });
+      expect(completed).toBeDefined();
+      expect(completed?.rewardPoints).toBeGreaterThan(0);
     });
   });
 });

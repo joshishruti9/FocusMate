@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
+import { ShopService } from '../../services/shop.service';
+import { Observable } from 'rxjs';
 
 interface Item {
   _id: string;
@@ -17,43 +20,79 @@ interface Item {
   templateUrl: './shop.component.html',
   styleUrls: ['./shop.component.css']
 })
-export class ShopComponent implements OnInit {
+export class ShopComponent implements OnInit, OnDestroy {
   items: Item[] = [];
   loading = true;
   error: string | null = null;
+  user: any = null;
+  rewardPoints: number = 0;
 
-  constructor(private http: HttpClient) {}
+  private userSub: any;
+  constructor(private http: HttpClient, private authService: AuthService, private userService: UserService, private shopService: ShopService) {}
 
   ngOnInit() {
     this.fetchItems();
+    // Initialize user from current auth state and subscribe to updates
+    this.user = this.authService.getUser();
+    this.userSub = this.authService.currentUser$.subscribe((u: any) => {
+      this.user = u;
+      const email = this.user?.userEmail;
+      if (email) {
+        this.userService.getUserByEmail(email).subscribe({ next: (profile) => { this.user = profile; this.rewardPoints = profile.rewardPoints || 0; }, error: () => { this.rewardPoints = 0; } });
+      } else {
+        this.rewardPoints = 0;
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.userSub) this.userSub.unsubscribe();
   }
 
   // For testing, you can use static mock data first
   fetchItems() {
-    // Replace this.http.get(...) with mock data for UI testing
-    const mockData: Item[] = [
-      { _id: '1', name: 'Dog with Hat', price: 100, imageUrl: 'https://static.vecteezy.com/system/resources/previews/027/616/206/non_2x/dog-wearing-bucket-hat-vintage-logo-line-art-concept-black-and-white-color-hand-drawn-illustration-vector.jpg' },
-      { _id: '2', name: 'Silver Sword', price: 200, imageUrl: 'https://static.vecteezy.com/system/resources/previews/057/282/475/non_2x/a-black-and-silver-sword-with-a-white-background-vector.jpg' },
-      { _id: '3', name: 'Red Heart', price: 50, imageUrl: 'https://img.freepik.com/premium-vector/heart-pixel-8-bit-heart_668332-480.jpg' }
-    ];
-    of(mockData).subscribe({
-      next: (data) => {
-        this.items = data;
-        this.loading = false;
-      }
+    // Load from backend
+    this.shopService.getItems().subscribe({
+      next: (data) => { this.items = data; this.loading = false; },
+      error: (err) => { console.error('Failed to load shop items', err); this.loading = false; this.error = 'Failed to load items'; }
     });
 
-    // Uncomment when backend is ready
-    // this.http.get<Item[]>('http://localhost:3003/shop/items')
-    //   .subscribe({
-    //     next: data => { this.items = data; this.loading = false; },
-    //     error: err => { this.error = 'Failed to load items'; this.loading = false; }
-    //   });
+
+    const user = this.authService.getUser();
+    if (user?.userEmail) {
+      this.userService.getUserByEmail(user.userEmail).subscribe({
+        next: (u) => { this.user = u; this.rewardPoints = u.rewardPoints || 0; },
+        error: () => { this.rewardPoints = 0; }
+      });
+    }
   }
 
   purchaseItem(itemId: string) {
-    console.log('Purchased item:', itemId);
-    alert(`Purchased item with ID: ${itemId}`);
+    const user = this.user || this.authService.getUser();
+    if (!user) {
+      alert('Please login to purchase items.');
+      return;
+    }
+    this.shopService.purchaseItem(user.userEmail, itemId).subscribe({
+      next: (res) => {
+        // If server returns updated user, update local user
+        if (res && res.user) {
+          this.authService.setUser(res.user, this.authService.getToken() || undefined);
+        }
+        alert('Purchase successful!');
+        // remove purchased item from list
+        this.items = this.items.filter(i => i._id !== itemId);
+        // refresh user reward points
+        this.userService.getUserByEmail(user.userEmail).subscribe({
+          next: (u) => { this.user = u; this.rewardPoints = u.rewardPoints || 0; },
+          error: () => { this.rewardPoints = 0; }
+        });
+      },
+      error: (err) => {
+        console.error('Purchase failed', err);
+        alert('Purchase failed: ' + (err.error?.message || 'Unknown error'));
+      }
+    });
   }
 }
 

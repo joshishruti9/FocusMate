@@ -1,0 +1,171 @@
+<div class="reminder-component">
+    <div class="reminder-header mb-3">
+        <label class="form-label">
+            <i class="fas fa-bell text-primary"></i> Reminder Settings
+        </label>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <!-- Enable Reminder Toggle -->
+            <div class="form-check form-switch mb-4">
+                <input 
+                    class="form-check-input" 
+                    type="checkbox" 
+                    id="enableReminder"
+                    [(ngModel)]="reminderEnabled"
+                    (change)="onReminderToggle()">
+                <label class="form-check-label fw-bold" for="enableReminder">
+                    Enable Reminder Notifications
+                </label>
+            </div>
+
+            <!-- Reminder Options (shown when enabled) -->
+            <div *ngIf="reminderEnabled" class="reminder-options">
+                
+                <!-- Frequency Selection -->
+                <div class="mb-4">
+                    <label for="frequency" class="form-label">
+                        <i class="fas fa-redo text-primary"></i> Reminder Frequency <span class="text-danger">*</span>
+                    </label>
+                    <select 
+                        class="form-select" 
+                        id="frequency"
+                        [(ngModel)]="frequency"
+                        (change)="onFrequencyChange()"
+                        required>
+                        <option value="">Select frequency...</option>
+                        <option value="daily">📅 Daily</option>
+                        <option value="weekly">📆 Weekly</option>
+                        <option value="monthly">🗓️ Monthly</option>
+                        <option value="custom">⚙️ Custom</option>
+                    </select>
+                </div>
+
+                <!-- Time Selection -->
+                <div class="mb-4">
+                    <label for="reminderTime" class="form-label">
+                        <i class="fas fa-clock text-primary"></i> Reminder Time <span class="text-danger">*</span>
+                    </label>
+                    <input 
+                        type="time" 
+                        class="form-control" 
+                        id="reminderTime"
+                        [(ngModel)]="reminderTime"
+                        required>
+                    <small class="form-text text-muted">What time should we remind you?</small>
+                </div>
+
+                <!-- Weekly: Day Selection -->
+                <div class="mb-4" *ngIf="frequency === 'weekly'">
+                    <label class="form-label">
+                        <i class="fas fa-calendar-week text-primary"></i> Select Day <span class="text-danger">*</span>
+                    </label>
+                    <div class="day-selector">
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="weekDay" id="monday" value="monday" [(ngModel)]="selectedWeekDay">
+                            <label class="btn btn-outline-primary" for="monday">Mon</label>
+
+                            <input type="radio" class="btn-check" name="weekDay" id="tuesday" value="tuesday" [(ngModel)]="selectedWeekDay">
+                            <label class="btn btn-outline-primary" for="tuesday">Tue</label>
+
+                            <input type="radio" class="btn-check" name="weekDay" id="wednesday" value="wednesday" [(ngModel)]="selectedWeekDay">
+                            <label class="btn btn-outline-primary" for="wednesday">Wed</label>
+
+                            <input type="radio" class="btn-check" name="weekDay" id="thursday" value="thursday" [(ngModel)]="selectedWeekDay">
+                            <label class="btn btn-outline-primary" for="thursday">Thu</label>
+
+                            <input type="radio" class="btn-check" name="weekDay" id="friday" value="friday" [(ngModel)]="selectedWeekDay">
+                            <label class="btn btn-outline-primary" for="friday">Fri</label>
+
+                            <input type="radio" class="btn-check" name="weekDay" id="saturday" value="saturday" [(ngModel)]="selectedWeekDay">
+                            <label class="btn btn-outline-primary" for="saturday">Sat</label>
+
+                            <input type="radio" class="btn-check" name="weekDay" id="sunday" value="sunday" [(ngModel)]="selectedWeekDay">
+                            <label class="btn btn-outline-primary" for="sunday">Sun</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly: Date Selection -->
+                <div class="mb-4" *ngIf="frequency === 'monthly'">
+                    <label for="monthlyDate" class="form-label">
+                        <i class="fas fa-calendar-day text-primary"></i> Day of Month <span class="text-danger">*</span>
+                    </label>
+                    <select class="form-select" id="monthlyDate" [(ngModel)]="selectedMonthDay">
+                        <option value="">Select day...</option>
+                        <option *ngFor="let day of monthDays" [value]="day">{{ day }}</option>
+                    </select>
+                </div>
+
+                <!-- Custom: Interval -->
+                <div class="mb-4" *ngIf="frequency === 'custom'">
+                    <label for="customInterval" class="form-label">
+                        <i class="fas fa-cog text-primary"></i> Repeat Every
+                    </label>
+                    <div class="input-group">
+                        <input 
+                            type="number" 
+                            class="form-control" 
+                            id="customInterval"
+                            [(ngModel)]="customInterval"
+                            min="1"
+                            placeholder="Enter number">
+                        <select class="form-select" [(ngModel)]="customUnit" style="max-width: 150px;">
+                            <option value="days">Days</option>
+                            <option value="weeks">Weeks</option>
+                            <option value="months">Months</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Notification Channels -->
+                <div class="mb-4">
+                    <label class="form-label">
+                        <i class="fas fa-paper-plane text-primary"></i> Send Reminder Via <span class="text-danger">*</span>
+                    </label>
+                    <div class="notification-channels">
+                        <div class="form-check">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                id="emailNotification"
+                                [(ngModel)]="sendEmail"
+                                (change)="validateChannels()">
+                            <label class="form-check-label" for="emailNotification">
+                                <i class="fas fa-envelope text-info"></i> Email Notification
+                            </label>
+                        </div>
+                        <div *ngIf="channelError" class="text-danger mt-2">
+                            <small>Please select at least one notification method.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advance Notice -->
+                <div class="mb-4">
+                    <label for="advanceNotice" class="form-label">
+                        <i class="fas fa-hourglass-start text-primary"></i> Remind Me Before
+                    </label>
+                    <select class="form-select" id="advanceNotice" [(ngModel)]="advanceNotice">
+                        <option value="0">At the time</option>
+                        <option value="5">5 minutes before</option>
+                        <option value="15">15 minutes before</option>
+                        <option value="30">30 minutes before</option>
+                        <option value="60">1 hour before</option>
+                        <option value="1440">1 day before</option>
+                    </select>
+                </div>
+
+                <!-- Reminder Preview -->
+                <div class="alert alert-light border mt-4">
+                    <h6 class="mb-2"><i class="fas fa-info-circle text-primary"></i> Reminder Summary</h6>
+                    <p class="mb-1"><strong>Frequency:</strong> {{ getReminderSummary() }}</p>
+                    <p class="mb-1"><strong>Time:</strong> {{ reminderTime || 'Not set' }}</p>
+                    <p class="mb-1"><strong>Channels:</strong> {{ getChannelsSummary() }}</p>
+                    <p class="mb-0"><strong>Advance Notice:</strong> {{ getAdvanceNoticeSummary() }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

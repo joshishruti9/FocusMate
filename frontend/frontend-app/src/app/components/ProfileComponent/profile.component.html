@@ -1,0 +1,19 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-6">
+      <h3>{{ user?.firstName }}'s Profile</h3>
+      <p>Email: {{ user?.userEmail }}</p>
+      <p>Available points: <strong>{{ user?.rewardPoints }}</strong></p>
+    </div>
+    <div class="col-md-6">
+      <h4>Purchased Items</h4>
+      <div *ngIf="purchasedItems.length === 0">No items purchased yet</div>
+      <ul class="list-group">
+        <li *ngFor="let item of purchasedItems" class="list-group-item">
+          <img [src]="item.imageUrl" class="img-thumbnail me-2" alt="{{ item.name }}" width="50" />
+          {{ item.name }} • {{ item.price }} XP
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

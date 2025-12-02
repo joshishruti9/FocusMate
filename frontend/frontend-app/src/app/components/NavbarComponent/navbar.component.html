@@ -1,6 +1,6 @@
  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="#"><i class="fas fa-crown"></i> Focusmate</a>
+            <a class="navbar-brand" href="#"><i class="fas fa-crown"></i> FocusMate</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -15,15 +15,31 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#about">About</a>
                     </li>
+                                        <li class="nav-item" *ngIf="user">
+                                            <a class="nav-link" routerLink="/task">Tasks</a>
+                                        </li>
+                                        <li class="nav-item" *ngIf="user">
+                                                <a class="nav-link" routerLink="/profile">Profile</a>
+                                        </li>
                     <li class="nav-item">
-                      <a class="nav-link" routerLink="/task">Tasks</a>
+                        <a class="nav-link" routerLink="/viewTasks">Pending Tasks</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" routerLink="/viewTasks">Profile</a>
+                    <li class="nav-item" *ngIf="user">
+                        <a class="nav-link" (click)="logout()">Logout</a>
                     </li>
-                    <li class="nav-item">
-                      <a class="nav-link" routerLink="/shop">Shop</a>
+                    <li class="nav-item" *ngIf="!user">
+                        <a class="nav-link" routerLink="/login">Login</a>
                     </li>
+                                        <li class="nav-item" *ngIf="user">
+                                            <a class="nav-link" routerLink="/shop">Shop</a>
+                                        </li>
+                                        <li class="nav-item" *ngIf="user">
+                                            <a class="nav-link" routerLink="/completed">Completed</a>
+                                        </li>
+                                        <li class="nav-item d-flex align-items-center" *ngIf="user?.picture">
+                                            <span class="me-2 text-light">{{ rewardPoints }} XP</span>
+                                            <img [src]="user.picture" alt="Profile" class="rounded-circle ms-3" width="40" height="40">
+                                        </li>
                 </ul>
             </div>
         </div>

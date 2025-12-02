@@ -8,6 +8,10 @@ const taskSchema = new mongoose.Schema({
   priority: { type: String, enum: ["Low", "Medium", "High"], default: "Low", required: true },
   description: { type: String, default: "" },
   isCompleted: { type: Boolean, default: false },
+  reminder: {
+    enabled: { type: Boolean, default: false },
+    remindAt: { type: String, default: ''},
+  },
 });
 
 export default mongoose.model("Task", taskSchema);
