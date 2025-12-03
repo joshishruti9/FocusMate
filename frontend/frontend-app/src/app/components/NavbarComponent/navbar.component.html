@@ -6,40 +6,40 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#pricing">Pricing</a>
-                    </li>
-                    <li class="nav-item">
+                    <li class="nav-item" *ngIf="!user">
                         <a class="nav-link" href="#about">About</a>
                     </li>
-                                        <li class="nav-item" *ngIf="user">
-                                            <a class="nav-link" routerLink="/task">Tasks</a>
-                                        </li>
-                                        <li class="nav-item" *ngIf="user">
-                                                <a class="nav-link" routerLink="/profile">Profile</a>
-                                        </li>
-                    <li class="nav-item">
-                        <a class="nav-link" routerLink="/viewTasks">Pending Tasks</a>
+                    <li class="nav-item" *ngIf="!user">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item" *ngIf="!user">
+                        <a class="nav-link" href="#pricing">Pricing</a>
+                    </li>
+                    <li class="nav-item" *ngIf="user">
+                        <a class="nav-link" routerLink="/task">Quest</a>
+                    </li>
+                    <li class="nav-item"  *ngIf="user">
+                        <a class="nav-link" routerLink="/viewTasks">Dashboard</a>
+                    </li>
+                    <li class="nav-item" *ngIf="user">
+                        <a class="nav-link" routerLink="/completed">Achievements</a>
+                    </li>
+                    <li class="nav-item" *ngIf="user">
+                        <a class="nav-link" routerLink="/shop">Market</a>
+                    </li>
+                     <li class="nav-item" *ngIf="user">
+                        <a class="nav-link" routerLink="/profile">Hero Profile</a>
                     </li>
                     <li class="nav-item" *ngIf="user">
                         <a class="nav-link" (click)="logout()">Logout</a>
                     </li>
                     <li class="nav-item" *ngIf="!user">
                         <a class="nav-link" routerLink="/login">Login</a>
+                    </li>           
+                    <li class="nav-item d-flex align-items-center" *ngIf="user?.picture">
+                        <span class="me-1 text-light">{{ rewardPoints }} XP</span>
+                        <img [src]="user.picture" alt="Profile" class="rounded-circle ms-3" width="40" height="40">
                     </li>
-                                        <li class="nav-item" *ngIf="user">
-                                            <a class="nav-link" routerLink="/shop">Shop</a>
-                                        </li>
-                                        <li class="nav-item" *ngIf="user">
-                                            <a class="nav-link" routerLink="/completed">Completed</a>
-                                        </li>
-                                        <li class="nav-item d-flex align-items-center" *ngIf="user?.picture">
-                                            <span class="me-2 text-light">{{ rewardPoints }} XP</span>
-                                            <img [src]="user.picture" alt="Profile" class="rounded-circle ms-3" width="40" height="40">
-                                        </li>
                 </ul>
             </div>
         </div>

@@ -11,6 +11,8 @@ const taskSchema = new mongoose.Schema({
   reminder: {
     enabled: { type: Boolean, default: false },
     remindAt: { type: String, default: ''},
+    frequency: { type: String, default: '' },
+    weekDay: { type: String, default: '' } 
   },
 });
 

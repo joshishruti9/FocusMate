@@ -149,47 +149,6 @@ export const markTaskComplete = async (req: Request, res: Response): Promise<voi
   }
 };
 
-export const getTasksDueSoon = async (req: Request, res: Response): Promise<void> => {
-  try {
-    // +/- 240 minutes window
-    const minutes = 480;
-
-    const now = new Date();
-    const lower = new Date(now.getTime() - minutes * 60 * 1000);
-    const upper = new Date(now.getTime() + minutes * 60 * 1000);
-
-    console.log("NOW:", now.toISOString());
-    console.log("LOWER:", lower.toISOString());
-    console.log("UPPER:", upper.toISOString());
-
-    // Get all active tasks
-    const tasks = await Task.find({ isCompleted: false });
-
-    console.log("ALL ACTIVE TASKS:", tasks);
-
-    // Filter tasks whose reminder is within +/- 4 hours
-    const dueSoon = tasks.filter((t) => {
-      if (!t.reminder?.enabled || !t.reminder?.remindAt) return false;
-
-      const remindAt = new Date(t.reminder.remindAt);
-
-      console.log(
-        `remindAt: ${remindAt.toISOString()} | lower: ${lower.toISOString()} | upper: ${upper.toISOString()}`
-      );
-
-      return remindAt >= lower && remindAt <= upper;
-    });
-
-    console.log("---------------------------------------");
-    console.log("DUE SOON TASKS:", dueSoon);
-
-    res.status(200).json(dueSoon);
-  } catch (error) {
-    console.error("Error fetching tasks due soon:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
 export const getCompletedTasks = async (req: Request, res: Response): Promise<void> => {
   try {
     // If authorization header present, verify token and restrict to token userEmail
@@ -259,5 +218,27 @@ export const getCompletedSummary = async (req: Request, res: Response): Promise<
   }
 };
 
+export const getDueSoonTask = async (req: Request, res: Response): Promise<void> => {
+
+  try {
+    const { email } = req.params;
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const todayEnd = new Date(todayStart);
+    todayEnd.setDate(todayEnd.getDate() + 1);
+
+    const tasks = await Task.find({
+      userEmail: email,
+      isCompleted: false,
+      dueDate: { $gte: todayStart.toISOString(), $lt: todayEnd.toISOString() }
+    });
+
+    res.status(200).json(tasks);
+  } catch (error) {
+    console.error('Error fetching due soon tasks:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+
+};
 
   

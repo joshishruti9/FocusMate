@@ -1,0 +1,36 @@
+<div class="notification-banner-container">
+  <div 
+    *ngFor="let notification of notifications" 
+    class="notification-banner"
+    [ngClass]="getPriorityClass(notification.priority)">
+    
+    <div class="banner-content">
+      <div class="banner-icon">
+        <i class="fas fa-bell"></i>
+      </div>
+      
+      <div class="banner-details">
+        <div class="banner-title">
+          {{ getPriorityIcon(notification.priority) }} 
+          <strong>{{ notification.taskName }}</strong>
+        </div>
+        <div class="banner-meta">
+          <div class="banner-time">
+            <i class="fas fa-clock"></i> 
+            Reminder {{ getTimeUntilReminder(notification.reminderTime) }}
+          </div>
+          <div class="banner-frequency">
+            {{ getFrequencyText(notification.frequency, notification.weekDay) }}
+          </div>
+        </div>
+      </div>
+
+      <button 
+        class="banner-dismiss"
+        (click)="dismissNotification(notification.id)"
+        title="Dismiss">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+</div>

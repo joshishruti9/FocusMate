@@ -86,7 +86,6 @@ export class TaskComponent implements OnInit {
           const datePart = this.CreateTask.dueDate || new Date().toISOString().split('T')[0];
           const timePart = this.reminderConfig.time || '09:00';
           const remindAt = new Date(`${datePart}T${timePart}:00`);
-          // apply advance notice
           if (this.reminderConfig.advanceNotice && this.reminderConfig.advanceNotice > 0) {
             remindAt.setMinutes(remindAt.getMinutes() - this.reminderConfig.advanceNotice);
           }
@@ -96,7 +95,6 @@ export class TaskComponent implements OnInit {
         }
       }
       if (this.editMode && this.editingTaskId) {
-        // Call edit service
         this.taskService.editTask(payload as any, this.editingTaskId).subscribe({
           next: () => {
             this.successMessage = 'Success: Quest updated.';
@@ -113,20 +111,18 @@ export class TaskComponent implements OnInit {
               this.errorMessage = 'Error: Failed to log quest. Check console for details.';
           }
         });
-          this.errorMessage = ''; // Clear errorMessage on create success
+          this.errorMessage = '';
       } else {
         this.taskService.createTask(payload).subscribe({
           next: () => {
             console.log('API call successful.');
             this.successMessage = 'Success: New Quest Logged! Preparing for deployment.';
-            // Reset model, keep the user's email pre-filled
             this.CreateTask  = { taskName: '', dueDate: '', priority: '', category: '', description: '', userEmail: this.userEmail };
-            // Reset form state to prevent showing validation errors after successful submission
+          
             if (form) {
               form.resetForm({ userEmail: this.userEmail });
             }
             this.reminderConfig = null;
-            // Optionally navigate back to view tasks
             this.router.navigate(['/viewTasks']);
           },
           error: err => {
