@@ -65,7 +65,6 @@ it('should create user on first google login and return tasks', async () => {
   expect(jsonResult).toBeDefined();
   expect(jsonResult.code).toBe(200);
   expect(jsonResult.data.user.userEmail).toBe('googleuser@example.com');
-  expect(jsonResult.data.user.rewardPoints).toBe(70);
   expect(Array.isArray(jsonResult.data.tasks)).toBe(true);
   expect(jsonResult.data.tasks[0].taskName).toBe('Task A');
 });

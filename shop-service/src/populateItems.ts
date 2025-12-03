@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Item from "./models/item";
 
-const mongoUri = "mongodb://localhost:27017/focusmate";
+const mongoUri = "mongodb+srv://sjoshi2_db_user:ddMzBV8iy0oSRE2y@focusmate.ylqqvj8.mongodb.net/?appName=focusmate";
 
 mongoose.connect(mongoUri)
   .then(async () => {

@@ -12,6 +12,12 @@ export interface Task {
   category: string;
   userEmail: string;
   isCompleted?: boolean;
+  reminder?: {
+    enabled?: boolean;
+    remindAt?: string;
+    frequency?: string;    
+    weekDay?: string;
+  };
   __v?: number;
 }
 
@@ -37,6 +43,8 @@ export interface CreateTask {
   reminder?: {
     enabled?: boolean;
     remindAt?: string;
+    frequency?: string;    
+    weekDay?: string;
   };
 }
 

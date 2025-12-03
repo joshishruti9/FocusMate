@@ -12,7 +12,7 @@ app.use(cors()); // Allow requests from Angular frontend
 app.use(express.json());
 
 // 🟢 MongoDB connection string
-const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/focusmate";
+const mongoUri = "mongodb+srv://sjoshi2_db_user:ddMzBV8iy0oSRE2y@focusmate.ylqqvj8.mongodb.net/?appName=focusmate";
 
 mongoose
   .connect(mongoUri)

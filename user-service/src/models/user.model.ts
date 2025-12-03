@@ -15,10 +15,7 @@ const userSchema = new mongoose.Schema({
     purchasedAt: { type: Date, default: Date.now }
   }],
   notificationPreference: {
-    email: {
-      enabled: { type: Boolean, default: true },
-      scheduleCron: { type: String, default: '*/15 * * * *' }
-    }
+      enabled: { type: Boolean, default: true }
   }
 });
 

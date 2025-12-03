@@ -1,0 +1,156 @@
+.notification-banner-container {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 1050;
+  max-width: 420px;
+  width: calc(100% - 40px);
+}
+
+.notification-banner {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  margin-bottom: 12px;
+  padding: 16px;
+  border-left: 5px solid #667eea;
+  animation: slideInRight 0.4s ease-out;
+  transition: all 0.3s ease;
+}
+
+.notification-banner:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  transform: translateX(-4px);
+}
+
+.notification-banner.priority-high {
+  border-left-color: #dc3545;
+  background: linear-gradient(to right, #fff5f5, white);
+}
+
+.notification-banner.priority-medium {
+  border-left-color: #ffc107;
+  background: linear-gradient(to right, #fffef5, white);
+}
+
+.notification-banner.priority-low {
+  border-left-color: #28a745;
+  background: linear-gradient(to right, #f5fff7, white);
+}
+
+.banner-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.banner-icon {
+  font-size: 24px;
+  color: #667eea;
+  animation: bellRing 2s ease-in-out infinite;
+}
+
+.banner-details {
+  flex: 1;
+}
+
+.banner-title {
+  font-size: 15px;
+  color: #2c3e50;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.banner-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.banner-time {
+  font-size: 13px;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.banner-time i {
+  color: #667eea;
+}
+
+.banner-frequency {
+  font-size: 12px;
+  color: #8b949e;
+  font-weight: 500;
+}
+
+.banner-dismiss {
+  background: transparent;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.banner-dismiss:hover {
+  background: #f8f9fa;
+  color: #dc3545;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bellRing {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  10%, 30% {
+    transform: rotate(-10deg);
+  }
+  20%, 40% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .notification-banner-container {
+    top: 60px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-width: none;
+  }
+
+  .notification-banner {
+    padding: 12px;
+  }
+
+  .banner-title {
+    font-size: 14px;
+  }
+
+  .banner-time {
+    font-size: 12px;
+  }
+
+  .banner-frequency {
+    font-size: 11px;
+  }
+}

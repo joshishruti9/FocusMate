@@ -1,28 +1,41 @@
-<div *ngIf="loading" class="text-center">Loading items...</div>
-<div *ngIf="error" class="text-center text-danger">{{ error }}</div>
+<!DOCTYPE html> 
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>View Pending Quests</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+        <link href="shop.component.css" rel="stylesheet">
+    </head>
+    <body>
+      <div *ngIf="loading" class="text-center">Loading items...</div>
+      <div *ngIf="error" class="text-center text-danger">{{ error }}</div>
 
- <div class="container mt-4">
-  <div class="mb-3">
-    <h5 *ngIf="user?.userEmail">Welcome, {{ user.userEmail }} • Reward points: {{ user.rewardPoints }}</h5>
-    <h5 *ngIf="!user">Welcome! Sign in to see reward points.</h5>
-  </div>
-<div class="row">
-  <div class="col-md-4 mb-4" *ngFor="let item of items">
-    <div class="card h-100 shop-card">
-      <!-- Image section -->
-      <div class="image-container">
-        <img [src]="item.imageUrl" alt="{{ item.name }}" class="card-img" />
+      <div class="container mt-4">
+        <div class="mb-3">
+          <h5 *ngIf="user?.userEmail">Welcome, {{ user.userEmail }} • Reward points: {{ user.rewardPoints }}</h5>
+          <h5 *ngIf="!user">Welcome! Sign in to see reward points.</h5>
+        </div>
+      <div class="row">
+        <div class="col-md-4 mb-4" *ngFor="let item of items">
+          <div class="card h-100 shop-card">
+            <!-- Image section -->
+            <div class="image-container">
+              <img [src]="item.imageUrl" alt="{{ item.name }}" class="card-img" />
+            </div>
+            <!-- Info section -->
+            <div class="card-body text-center">
+              <h5 class="card-title">{{ item.name }}</h5>
+              <p class="card-text">Price: {{ item.price }} coins</p>
+              <button class="btn btn-primary" (click)="purchaseItem(item._id)" [disabled]="!user || user.rewardPoints <= item.price">
+                Purchase
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-      <!-- Info section -->
-      <div class="card-body text-center">
-        <h5 class="card-title">{{ item.name }}</h5>
-        <p class="card-text">Price: {{ item.price }} coins</p>
-        <button class="btn btn-primary" (click)="purchaseItem(item._id)" [disabled]="!user || user.rewardPoints <= item.price">
-          Purchase
-        </button>
       </div>
-    </div>
-  </div>
-</div>
-</div>
+    </body>
+</html>
 

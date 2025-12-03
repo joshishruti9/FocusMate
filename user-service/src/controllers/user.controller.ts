@@ -142,7 +142,6 @@ export const completeTaskAndAddReward = async (req: Request, res: Response): Pro
   }
 };
 
-
 export const addReward = async (req: Request, res: Response): Promise<void> => {
   try {
     const { userEmail, points } = req.body;
@@ -259,5 +258,33 @@ export const purchaseItemForUser = async (req: Request, res: Response): Promise<
   } catch (err) {
     console.error('Error in purchaseItemForUser:', err);
     res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+export const updateInAppNotificationPreference = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email } = req.params;
+    const { enabled } = req.body;
+
+    const user = await User.findOne({ userEmail: email });
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    if (!user.notificationPreference) {
+      user.notificationPreference = { enabled: true }  as any;
+    }
+
+    user.notificationPreference = { enabled: enabled !== undefined ? enabled : true } as any;
+    await user.save();
+
+    res.status(200).json({ 
+      message: 'In-app notification preference updated', 
+      inAppEnabled: user.notificationPreference?.enabled 
+    });
+  } catch (err) {
+    console.error('Error updating in-app notification preference:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 };

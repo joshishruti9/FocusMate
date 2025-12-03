@@ -6,7 +6,7 @@ import taskRoutes from './routes/task.routes';
 
 dotenv.config();
 
-const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/focusmate";
+const mongoUri = "mongodb+srv://sjoshi2_db_user:ddMzBV8iy0oSRE2y@focusmate.ylqqvj8.mongodb.net/?appName=focusmate";
 
 const app = express();
 app.use(cors());

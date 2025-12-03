@@ -11,6 +11,7 @@ import {
 	updateNotificationPreference,
 	googleLogin,
     purchaseItemForUser,
+	updateInAppNotificationPreference
 } from "../controllers/user.controller";
 
 const router = Router();
@@ -33,6 +34,8 @@ router.post('/:id/purchase', purchaseItemForUser);
 router.delete("/:id", deleteUser);
 
 router.post("/complete", completeTaskAndAddReward);
+
+router.put("/notification/in-app/:email", updateInAppNotificationPreference);
 
 router.post("/rewards", addReward);
 
