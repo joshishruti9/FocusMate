@@ -17,6 +17,11 @@ export class ShopService {
   purchaseItem(userId: string, itemId: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/purchase`, { userId, itemId });
   }
+  
+  // Create an item
+  createItem(itemData: { name: string; price: number; imageUrl: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/items`, itemData);
+  }
 }
 
 
