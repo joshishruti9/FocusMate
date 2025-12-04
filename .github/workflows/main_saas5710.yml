@@ -7,12 +7,21 @@ on:
 jobs:
   user:
     uses: ./.github/workflows/user-service.yml
+    secrets:
+      USER_PUBLISH_PROFILE: ${{ secrets.USER_PUBLISH_PROFILE }}
 
   task:
     uses: ./.github/workflows/task-service.yml
+    secrets:
+      TASK_PUBLISH_PROFILE: ${{ secrets.TASK_PUBLISH_PROFILE }}
 
   shop:
     uses: ./.github/workflows/shop-service.yml
+    secrets:
+      SHOP_PUBLISH_PROFILE: ${{ secrets.SHOP_PUBLISH_PROFILE }}
 
   frontend:
     uses: ./.github/workflows/frontend-app.yml
+    secrets:
+      FRONTEND_PUBLISH_PROFILE: ${{ secrets.FRONTEND_PUBLISH_PROFILE }}
+
