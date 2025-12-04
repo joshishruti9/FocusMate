@@ -223,7 +223,7 @@ export const googleLogin = async (req: Request, res: Response): Promise<void> =>
     return;
   } catch (err) {
     console.error('Google login failed:', err);
-    res.redirect('http://localhost:4200/login');
+    res.redirect('https://saas5710-adbqfdbvafg2dtc0.centralus-01.azurewebsites.net/login');
     return;
   }
 };
