@@ -1,10 +1,7 @@
 name: Deploy Task Service
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - "task-service/**"
+  workflow_call:
 
 jobs:
   deploy:
