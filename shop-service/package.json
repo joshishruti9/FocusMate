@@ -28,8 +28,8 @@
     "populate": "ts-node src/populateItems.ts",
     "test": "jest",
     "test:watch": "jest --watch",
-    "start": "node dist/app.js",
-    "dev": "ts-node src/app.ts",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
     "build": "tsc"
   }
 }
