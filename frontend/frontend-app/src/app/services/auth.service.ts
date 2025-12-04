@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private authUrl = 'https://users-service-b9bbb4csb2fjhdhg.centralus-01.azurewebsites.net/api/users/auth/google'; // API Gateway
+  private authUrl = `${environment.userApi}/api/users/auth/google`; // API Gateway
 
   constructor(private http: HttpClient) {}
 
