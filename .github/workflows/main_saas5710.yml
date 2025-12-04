@@ -7,12 +7,16 @@ on:
 jobs:
   user:
     uses: ./.github/workflows/user-service.yml
+    secrets: inherit
 
   task:
     uses: ./.github/workflows/task-service.yml
+    secrets: inherit
 
   shop:
     uses: ./.github/workflows/shop-service.yml
+    secrets: inherit
 
   frontend:
     uses: ./.github/workflows/frontend-app.yml
+    secrets: inherit
