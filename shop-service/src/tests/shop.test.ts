@@ -86,7 +86,7 @@ describe("Shop Service API Tests", () => {
 
     // Mock user-service GET
     (axios.get as jest.Mock).mockResolvedValue({
-      data: { _id: "user1", coins: 200, cosmetics: [] },
+      data: { _id: "user1", rewardPoints: 200, cosmetics: [] },
     });
 
     // Mock user-service POST purchase
@@ -118,7 +118,7 @@ describe("Shop Service API Tests", () => {
     });
 
     (axios.get as jest.Mock).mockResolvedValue({
-      data: { _id: "u1", coins: 50, cosmetics: [] },
+      data: { _id: "u1", rewardPoints: 50, cosmetics: [] },
     });
 
     const res = await request(app)
@@ -144,3 +144,4 @@ describe("Shop Service API Tests", () => {
     expect(res.status).toBe(500);
   });
 });
+
