@@ -1,37 +1,58 @@
-name: Deploy Frontend (Angular)
+name: Build and deploy Angular SSR app to Azure Web App - saas5710
 
 on:
-  workflow_call:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: ^20.17.19
+          node-version: '20.x'
 
-      - name: Install dependencies
-        working-directory: frontend/frontend-app
-        run: npm install
-
-      - name: Build Angular App
-        working-directory: frontend/frontend-app
-        run: npm run build -- --configuration production
-      
-      - name: Zip Angular build output
+      - name: Install and build Angular frontend (SSR)
+        working-directory: ./frontend/frontend-app
         run: |
-          cd frontend/frontend-app/dist/frontend-app
-          zip -r ../../../frontend.zip .
+          npm ci
+          npm run build:ssr
 
-      - name: Deploy to Azure App Service
-        uses: azure/webapps-deploy@v2
+      - name: Upload artifact for deployment
+        uses: actions/upload-artifact@v4
         with:
-          app-name: "saas5710"  
-          publish-profile: ${{ secrets.FRONTEND_PUBLISH_PROFILE }}
-          package: frontend/frontend-app/dist
+          name: frontend-app
+          path: frontend/frontend-app
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: read  
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-app
+          path: frontend-app
+          
+      - name: List files
+        run: ls -R
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'saas5710'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: frontend-app
