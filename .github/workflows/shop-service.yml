@@ -20,5 +20,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: "focusmate-shop-service"
-          publish-profile: ${{ secrets.SHOP_SERVICE_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets.SHOP_PUBLISH_PROFILE }}
           package: shop-service
