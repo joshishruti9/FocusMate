@@ -1,10 +1,7 @@
 name: Deploy User Service
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - "user-service/**"
+  workflow_call:
 
 jobs:
   build-and-deploy:

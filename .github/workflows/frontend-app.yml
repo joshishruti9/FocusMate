@@ -1,10 +1,7 @@
 name: Deploy Frontend (Angular)
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - "frontend/frontend-app/**"
+  workflow_call:
 
 jobs:
   deploy:

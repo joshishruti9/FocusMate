@@ -1,10 +1,7 @@
 name: Deploy Shop Service
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - "shop-service/**"
+  workflow_call:
 
 jobs:
   deploy:
