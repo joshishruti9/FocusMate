@@ -27,5 +27,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: "focusmate-user-service"
-          publish-profile: ${{ secrets.USER_SERVICE_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets.USER_PUBLISH_PROFILE }}
           package: user-service
