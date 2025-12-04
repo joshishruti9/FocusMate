@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private authUrl = 'http://localhost:4000/api/users/auth/google'; // API Gateway
+  private authUrl = 'https://users-service-b9bbb4csb2fjhdhg.centralus-01.azurewebsites.net/api/users/auth/google'; // API Gateway
 
   constructor(private http: HttpClient) {}
 

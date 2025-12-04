@@ -13,7 +13,7 @@ export interface Item {
   providedIn: 'root'
 })
 export class ShopService {
-  private apiUrl = 'http://localhost:3003/shop';
+  private apiUrl = 'https://shopservice-d5aegnddhfg3f6c4.centralus-01.azurewebsites.net/shop';
 
   constructor(private http: HttpClient) {}
   private getAuthHeaders() {

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private apiUrl = 'http://localhost:4000/api/users/email';
+  private apiUrl = 'https://users-service-b9bbb4csb2fjhdhg.centralus-01.azurewebsites.net/api/users/email';
   constructor(private http: HttpClient) {}
 
   private getAuthHeaders() {

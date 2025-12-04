@@ -53,7 +53,7 @@ export const purchaseItem = async (req: Request, res: Response) => {
     if (!item) return res.status(404).json({ message: "Item not found" });
 
     // Fetch user data from user-service
-    let userRes = await axios.get<any>(`http://localhost:4000/api/users/email/${userId}`);
+    let userRes = await axios.get<any>(`https://users-service-b9bbb4csb2fjhdhg.centralus-01.azurewebsites.net/api/users/email/${userId}`);
     const user = userRes.data;
 
     console.log("Fetched user")
@@ -63,7 +63,7 @@ export const purchaseItem = async (req: Request, res: Response) => {
     }
     console.log("Sending purchase request")
     // Deduct rewardPoints and add purchased item to user
-      userRes = await axios.post<any>(`http://localhost:4000/api/users/${user._id}/purchase`, {
+      userRes = await axios.post<any>(`https://users-service-b9bbb4csb2fjhdhg.centralus-01.azurewebsites.net/api/users/${user._id}/purchase`, {
       itemId: item._id,
       price: item.price,
       name: item.name,

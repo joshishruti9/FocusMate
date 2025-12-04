@@ -126,7 +126,7 @@ export const completeTaskAndAddReward = async (req: Request, res: Response): Pro
   try {
     const { taskId, userEmail } = req.body;
     
-    const taskServiceUrl = "http://localhost:5000/tasks/complete";
+    const taskServiceUrl = "https://task-service-dbeqc3e5b0fjfqgx.centralus-01.azurewebsites.net/tasks/complete";
     const taskResponse = await axios.post(taskServiceUrl, { taskId, userEmail });
 
     if (taskResponse.status !== 200) {
@@ -203,7 +203,7 @@ export const googleLogin = async (req: Request, res: Response): Promise<void> =>
     }
 
     // Fetch user's tasks from task-service (active tasks)
-    const taskServiceUrl = process.env.TASK_SERVICE_URL || 'http://localhost:5000';
+    const taskServiceUrl = process.env.TASK_SERVICE_URL || 'https://task-service-dbeqc3e5b0fjfqgx.centralus-01.azurewebsites.net';
     const tasksResp = await axios.get(`${taskServiceUrl}/api/tasks?userEmail=${encodeURIComponent(email)}`).catch(err => null);
     const tasks = tasksResp && tasksResp.data ? tasksResp.data : [];
     // Fetch total earned from completed tasks and sync to user's rewardPoints if not set

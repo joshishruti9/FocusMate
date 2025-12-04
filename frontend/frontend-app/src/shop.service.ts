@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ShopService {
-  private apiUrl = 'http://localhost:3003/shop'; // correct port and base path
+  private apiUrl = 'https://shopservice-d5aegnddhfg3f6c4.centralus-01.azurewebsites.net/shop'; // correct port and base path
 
   constructor(private http: HttpClient) {}
 
