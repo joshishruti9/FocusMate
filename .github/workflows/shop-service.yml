@@ -1,0 +1,27 @@
+name: Deploy Shop Service
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "shop-service/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install & Build
+        working-directory: shop-service
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "focusmate-shop-service"
+          publish-profile: ${{ secrets.SHOP_SERVICE_PUBLISH_PROFILE }}
+          package: shop-service

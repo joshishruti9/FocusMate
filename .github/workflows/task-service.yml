@@ -1,0 +1,29 @@
+name: Deploy Task Service
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "task-service/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install
+        working-directory: task-service
+        run: npm install
+
+      - name: Build
+        working-directory: task-service
+        run: npm run build
+
+      - name: Deploy
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "focusmate-task-service"
+          publish-profile: ${{ secrets.TASK_SERVICE_PUBLISH_PROFILE }}
+          package: task-service

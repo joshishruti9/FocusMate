@@ -1,0 +1,39 @@
+name: Deploy Frontend (Angular)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "frontend/frontend-app/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        working-directory: frontend/frontend-app
+        run: npm install
+
+      - name: Build Angular App
+        working-directory: frontend/frontend-app
+        env:
+          NG_ENV_USER_API: "https://users-service-b9bbb4csb2fjhdhg.centralus-01.azurewebsites.net"
+          NG_ENV_TASK_API: "https://task-service-dbeqc3e5b0fjfqgx.centralus-01.azurewebsites.net"
+          NG_ENV_SHOP_API: "https://shopservice-d5aegnddhfg3f6c4.centralus-01.azurewebsites.net"
+        run: npm run build -- --configuration production
+
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "Focusmate"  
+          publish-profile: ${{ secrets.FRONTEND_PUBLISH_PROFILE }}
+          package: frontend/frontend-app/dist
