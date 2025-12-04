@@ -13,7 +13,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install
         working-directory: user-service
@@ -28,4 +28,4 @@ jobs:
         with:
           app-name: "focusmate-user-service"
           publish-profile: ${{ secrets.USER_PUBLISH_PROFILE }}
-          package: user-service
+          package: ./user-service
