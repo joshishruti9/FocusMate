@@ -21,6 +21,6 @@ jobs:
       - name: Deploy
         uses: azure/webapps-deploy@v2
         with:
-          app-name: "focusmate-task-service"
+          app-name: "task-service"
           publish-profile: ${{ secrets.TASK_PUBLISH_PROFILE }}
           package: ./task-service

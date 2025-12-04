@@ -2,9 +2,6 @@ name: Deploy Shop Service
 
 on:
   workflow_call:
-  secrets:
-      SHOP_PUBLISH_PROFILE:
-        required: true
 
 jobs:
   deploy:
@@ -20,8 +17,8 @@ jobs:
           npm run build
 
       - name: Deploy
-        uses: azure/webapps-deploy@v3
+        uses: azure/webapps-deploy@v2
         with:
-          app-name: "focusmate-shop-service"
+          app-name: "shopservice"
           publish-profile: ${{ secrets.SHOP_PUBLISH_PROFILE }}
           package: ./shop-service
