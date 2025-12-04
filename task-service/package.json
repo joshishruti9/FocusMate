@@ -2,7 +2,7 @@
   "name": "task-service",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/app.js",
   "scripts": {
     "test": "jest --passWithNoTests",
     "start": "node dist/app.js",

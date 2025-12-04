@@ -2,7 +2,7 @@
   "name": "user-service",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/app.js",
   "scripts": {
     "test": "jest --passWithNoTests",
     "start": "node dist/app.js",
@@ -25,7 +25,6 @@
     "passport": "^0.7.0"
   },
   "devDependencies": {
-    "supertest": "^6.4.2",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/jest": "^29.5.4",
