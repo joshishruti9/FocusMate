@@ -31,7 +31,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: frontend-app
-          # ship the whole app folder so Azure sees package.json + dist/
           path: frontend/frontend-app
 
   deploy:
@@ -41,18 +40,23 @@ jobs:
       contents: read
 
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-app
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v4
+      with:
+        name: frontend-app
+        path: .   
 
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'saas5710'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: frontend/frontend-app
+    - name: List files
+      run: ls -R
+
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: 'saas5710'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: frontend-app
+
 
 
 
