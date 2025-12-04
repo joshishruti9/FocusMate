@@ -1,27 +1,32 @@
-name: Orchestrate All Deployments
+name: Orchestrate All FocusMate Deployments
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
+  # Deploy USER service
   user:
     uses: ./.github/workflows/user-service.yml
     secrets:
       USER_PUBLISH_PROFILE: ${{ secrets.USER_PUBLISH_PROFILE }}
 
+  # Deploy TASK service
   task:
     uses: ./.github/workflows/task-service.yml
     secrets:
       TASK_PUBLISH_PROFILE: ${{ secrets.TASK_PUBLISH_PROFILE }}
 
+  # Deploy SHOP/REWARD service
   shop:
     uses: ./.github/workflows/shop-service.yml
     secrets:
       SHOP_PUBLISH_PROFILE: ${{ secrets.SHOP_PUBLISH_PROFILE }}
 
+  # Deploy FRONTEND Angular app
   frontend:
     uses: ./.github/workflows/frontend-app.yml
     secrets:
       FRONTEND_PUBLISH_PROFILE: ${{ secrets.FRONTEND_PUBLISH_PROFILE }}
-
