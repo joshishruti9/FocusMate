@@ -23,4 +23,4 @@ jobs:
         with:
           app-name: "focusmate-task-service"
           publish-profile: ${{ secrets.TASK_PUBLISH_PROFILE }}
-          package: task-service
+          package: ./task-service
