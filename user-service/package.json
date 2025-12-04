@@ -2,7 +2,7 @@
   "name": "user-service",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/app.js",
   "scripts": {
     "test": "jest --passWithNoTests",
     "start": "node dist/app.js",
@@ -18,14 +18,12 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "google-auth-library": "^10.5.0",
     "jsonwebtoken": "^9.0.2",
     "google-auth-library": "^10.3.0",
     "mongoose": "^8.19.2",
     "passport": "^0.7.0"
   },
   "devDependencies": {
-    "supertest": "^6.4.2",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/jest": "^29.5.4",
