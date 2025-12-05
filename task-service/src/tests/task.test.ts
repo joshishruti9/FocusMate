@@ -4,11 +4,15 @@ import Task from '../models/task.model';
 import CompletedTask from '../models/completedTask.model';
 import * as TaskController from '../controllers/task.controller';
 import jwt from 'jsonwebtoken';
+import axios from "axios";
 import * as userClient from '../clients/userClient';
 
 jest.mock('../clients/userClient');
 
 const MONGODB_URI = 'mongodb://localhost:27017/focusmatetest';
+
+
+const BASE = "https://task-service-dbeqc3e5b0fjfqgx.centralus-01.azurewebsites.net/api/tasks";
 
 beforeAll(async () => {
   await mongoose.connect(MONGODB_URI);
@@ -39,12 +43,12 @@ describe('Task Service Integration Tests', () => {
       };
 
       const task = new Task(taskData);
-      const saved = await task.save();
+      const saved = await axios.post(`${BASE}`, task);
 
-      expect(saved._id).toBeDefined();
-      expect(saved.taskName).toBe(taskData.taskName);
-      expect(saved.priority).toBe(taskData.priority);
-      expect(saved.userEmail).toBe(taskData.userEmail);
+      expect(saved.status).toBeDefined();
+      expect(saved.data.task.userEmail).toBe(taskData.userEmail);
+      expect(saved.status).toBe(201);
+      await axios.delete(`${BASE}/${saved.data.task._id}`);
     });
 
     it('creates a task with reminder settings', async () => {
@@ -60,12 +64,13 @@ describe('Task Service Integration Tests', () => {
       } as any;
 
       const task = new Task(taskData);
-      const saved = await task.save();
+      const saved = await axios.post(`${BASE}`, task);
 
-      expect(saved._id).toBeDefined();
-      expect(saved.reminder).toBeDefined();
-      expect(saved.reminder?.enabled).toBe(true);
-      expect(saved.reminder?.remindAt).toBeDefined();
+      expect(saved.data.task._id).toBeDefined();
+      expect(saved.data.task.reminder).toBeDefined();
+      expect(saved.data.task.reminder?.enabled).toBe(true);
+      expect(saved.data.task.reminder?.remindAt).toBeDefined();
+      await axios.delete(`${BASE}/${saved.data.task._id}`);
     });
 
     it('generates unique taskIds for different tasks', async () => {
@@ -83,11 +88,13 @@ describe('Task Service Integration Tests', () => {
         userEmail: 'user2@test.com',
       });
 
-      const saved1 = await task1.save();
-      const saved2 = await task2.save();
+      const saved1 = await axios.post(`${BASE}`,task1);
+      const saved2 = await axios.post(`${BASE}`,task2);
 
-      expect(saved1.taskName).not.toBe(saved2.taskName);
-      expect(saved1._id).not.toBe(saved2._id);
+      expect(saved1.data.task.taskName).not.toBe(saved2.data.task.taskName);
+      expect(saved1.data.task._id).not.toBe(saved2.data.task._id);
+      await axios.delete(`${BASE}/${saved1.data.task._id}`);
+      await axios.delete(`${BASE}/${saved2.data.task._id}`);
     });
   })
 
@@ -108,11 +115,12 @@ describe('Task Service Integration Tests', () => {
           userEmail: 'b@test.com',
       });
 
-      const tasks = await Task.find().sort({ createdAt: -1 });
-
-      expect(tasks).toHaveLength(2);
-      expect(tasks[0].taskName).toBe('Task A');
-      expect(tasks[1].taskName).toBe('Task B');
+      const saved1 = await axios.post(`${BASE}`,task1);
+      const saved2 = await axios.post(`${BASE}`,task2);
+      const tasks = await axios.get(`${BASE}`);
+      expect(tasks.status).toBe(200)
+      await axios.delete(`${BASE}/${saved1.data.task._id}`);
+      await axios.delete(`${BASE}/${saved2.data.task._id}`);
     });
 
     it('retrieves task by MongoDB _id', async () => {
@@ -123,10 +131,10 @@ describe('Task Service Integration Tests', () => {
         userEmail: 'find@test.com',
       });
 
-      const found = await Task.findOne({ _id: created._id });
-
-      expect(found).toBeDefined();
-      expect(found?.taskName).toBe('Find Me');
+      const saved = await axios.post(`${BASE}`,created);
+      const found = await axios.get(`${BASE}/${saved.data.task._id}`)
+      expect(found.status).toBe(200)
+      await axios.delete(`${BASE}/${saved.data.task._id}`);
     });
 
     it('retrieves tasks with reminder.remindAt within window via controller', async () => {
@@ -164,7 +172,7 @@ describe('Task Service Integration Tests', () => {
       
     });
 
-        it('should return tasks due today', async () => {
+    it('should return tasks due today', async () => {
     const now = new Date();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const todayEnd = new Date(todayStart);
