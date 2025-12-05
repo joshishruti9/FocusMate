@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import Task from '../models/task.model';
 import CompletedTask from '../models/completedTask.model';
 import * as TaskController from '../controllers/task.controller';
-import jwt from 'jsonwebtoken';
 import axios from "axios";
 import * as userClient from '../clients/userClient';
 
@@ -101,14 +100,14 @@ describe('Task Service Integration Tests', () => {
   describe('Get Tasks', () => {
     it('retrieves all tasks', async () => {
 
-      const task1 = await Task.create({
+      const task1 = new Task({
           taskName: 'Task A',
           dueDate: '2025-01-01',
           priority: 'High',
           userEmail: 'a@test.com',
       });
 
-      const task2 = await Task.create({
+      const task2 = new Task({
           taskName: 'Task B',
           dueDate: '2025-01-02',
           priority: 'Low',
@@ -119,12 +118,14 @@ describe('Task Service Integration Tests', () => {
       const saved2 = await axios.post(`${BASE}`,task2);
       const tasks = await axios.get(`${BASE}`);
       expect(tasks.status).toBe(200)
+      expect(JSON.stringify(tasks.data)).toContain("Task A")
+      expect(JSON.stringify(tasks.data)).toContain("Task B")
       await axios.delete(`${BASE}/${saved1.data.task._id}`);
       await axios.delete(`${BASE}/${saved2.data.task._id}`);
     });
 
     it('retrieves task by MongoDB _id', async () => {
-      const created = await Task.create({
+      const created = new Task({
         taskName: 'Find Me',
         dueDate: '2025-01-01',
         priority: 'High',
@@ -134,6 +135,7 @@ describe('Task Service Integration Tests', () => {
       const saved = await axios.post(`${BASE}`,created);
       const found = await axios.get(`${BASE}/${saved.data.task._id}`)
       expect(found.status).toBe(200)
+      expect(JSON.stringify(found.data)).toContain("Find Me")
       await axios.delete(`${BASE}/${saved.data.task._id}`);
     });
 
