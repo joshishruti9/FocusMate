@@ -176,8 +176,8 @@ export const googleLogin = async (req: Request, res: Response): Promise<void> =>
     }
 
     // Verify token using google-auth-library
-    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID || '109401400332-e8j188na64feh8p1pf42vr68inpo644v.apps.googleusercontent.com');
-    const ticket = await client.verifyIdToken({ idToken, audience: process.env.GOOGLE_CLIENT_ID || '109401400332-e8j188na64feh8p1pf42vr68inpo644v.apps.googleusercontent.com' }).catch(err => null);
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+    const ticket = await client.verifyIdToken({ idToken, audience: process.env.GOOGLE_CLIENT_ID}).catch(err => null);
     if (!ticket) {
       res.status(401).json({ message: 'Invalid idToken' });
       return;
