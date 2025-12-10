@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
 
   initializeGoogleSignIn() {
     // TODO: Replace with your real client ID or use env variable
-    const clientId = (window as any).__env?.GOOGLE_CLIENT_ID || '109401400332-e8j188na64feh8p1pf42vr68inpo644v.apps.googleusercontent.com';
+    const clientId = (window as any).__env?.GOOGLE_CLIENT_ID;
     (window as any).google?.accounts?.id?.initialize({
       client_id: clientId,
       callback: (response: any) => this.handleCredentialResponse(response),
